@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="진희와 은솔의 한국어 단어 TTS 비교">
+  <title>단어 TTS 비교 · 진희 / 은솔</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f3a5f'/%3E%3Cpath d='M15 32h8l10-13v26L23 32h-8zm24-11c6 4 6 18 0 22' fill='none' stroke='%23f7c873' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root { --navy:#142942; --ink:#18202a; --muted:#667383; --line:#dce3ea; --paper:#f5f8fb; --white:#fff; --gold:#f3bc52; --blue:#dceeff; --tag:#edf2f7; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); font-family:Inter, Pretendard, "Noto Sans KR", Arial, sans-serif; background:var(--paper); line-height:1.55; }
+    .top { background:var(--navy); color:#fff; padding:42px max(24px,calc((100vw - 1160px)/2)); }
+    .eyebrow { color:var(--gold); font-size:.82rem; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }
+    h1 { margin:8px 0 7px; font-size:clamp(1.7rem,4vw,2.7rem); letter-spacing:-.045em; }
+    .top p { max-width:720px; margin:0; color:#d8e3ef; font-size:1rem; }
+    main { max-width:1160px; margin:0 auto; padding:28px 24px 64px; display:flex; flex-direction:column; }
+    .notice { display:flex; gap:12px; align-items:flex-start; padding:16px 18px; border:1px solid #d8e4ef; background:#eef6ff; border-radius:12px; color:#284866; font-size:.93rem; }
+    #method-panel { order:1; }
+    .notice { order:2; }
+    [aria-labelledby="samples-title"] { order:3; }
+    .foot { order:4; }
+    .notice strong { white-space:nowrap; }
+    .panel { margin-top:22px; background:var(--white); border:1px solid var(--line); border-radius:16px; box-shadow:0 8px 28px rgba(18,40,67,.06); overflow:hidden; }
+    .panel-header { padding:22px 24px 17px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:end; gap:16px; }
+    h2 { margin:0; font-size:1.2rem; letter-spacing:-.025em; }
+    .caption { margin:3px 0 0; color:var(--muted); font-size:.9rem; }
+    .filters { display:flex; flex-wrap:wrap; gap:7px; }
+    button { border:1px solid #ced9e5; background:#fff; color:#38506a; cursor:pointer; border-radius:999px; padding:7px 11px; font:inherit; font-size:.84rem; }
+    button[aria-pressed="true"] { background:var(--navy); border-color:var(--navy); color:#fff; }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; min-width:700px; }
+    th { color:#4d5d70; background:#f8fafc; text-align:left; font-size:.78rem; letter-spacing:.04em; text-transform:uppercase; }
+    th, td { padding:14px 18px; border-bottom:1px solid var(--line); vertical-align:middle; }
+    tr:last-child td { border-bottom:0; }
+    .word { font-weight:750; font-size:1.02rem; }
+    .tag { display:inline-block; background:var(--tag); color:#526477; border-radius:999px; padding:3px 8px; font-size:.74rem; font-weight:650; }
+    audio { width:230px; height:34px; }
+    .method { display:grid; grid-template-columns:1fr 1fr; gap:22px; padding:24px; }
+    .method section + section { border-left:1px solid var(--line); padding-left:22px; }
+    h3 { margin:0 0 9px; font-size:1rem; }
+    ul { margin:0; padding-left:1.1rem; color:#455568; font-size:.92rem; }
+    code { background:#f1f5f9; padding:1px 5px; border-radius:4px; font-family:ui-monospace, SFMono-Regular, Consolas, monospace; font-size:.85em; }
+    .foot { margin:22px 0 0; color:var(--muted); font-size:.82rem; }
+    @media (max-width:720px) { .top { padding:30px 20px; } main { padding:20px 14px 42px; } .panel-header { display:block; } .filters { margin-top:14px; } .method { grid-template-columns:1fr; } .method section + section { border-left:0; border-top:1px solid var(--line); padding-left:0; padding-top:20px; } }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="eyebrow">Stories · TTS evaluation</div>
+    <h1>단어 오디오 비교</h1>
+    <p>진희와 은솔의 단어 전용 오디오를 비교합니다. 감탄사·일반 단어·표기 특이 사례를 함께 넣어 실제 적용 전 톤과 끝 억양을 확인합니다.</p>
+  </header>
+  <main>
+    <aside class="notice"><strong>현재 관찰</strong><span>두 목소리 모두 원음 단독 생성보다, 앞문맥을 준 뒤 단어 구간만 잘라낸 방식에서 끝 억양이 더 안정적이었습니다. 최종 전체 생성 전에는 추가 표본 QA가 필요합니다.</span></aside>
+    <section class="panel" aria-labelledby="samples-title">
+      <div class="panel-header">
+        <div><h2 id="samples-title">20개 단어 샘플</h2><p class="caption">각 행에서 두 목소리를 같은 단어·같은 생성 조건으로 바로 비교할 수 있습니다.</p></div>
+        <div class="filters" aria-label="카테고리 필터">
+          <button type="button" aria-pressed="true" data-filter="all">전체 20</button>
+          <button type="button" aria-pressed="false" data-filter="일반">일반</button>
+          <button type="button" aria-pressed="false" data-filter="감탄사">감탄사</button>
+          <button type="button" aria-pressed="false" data-filter="특이 사례">특이 사례</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>단어</th><th>분류</th><th>진희</th><th>은솔</th></tr></thead>
+          <tbody id="samples"></tbody>
+        </table>
+      </div>
+    </section>
+    <section id="method-panel" class="panel" aria-labelledby="method-title">
+      <div class="panel-header"><div><h2 id="method-title">비교 조건과 제작 방식</h2><p class="caption">두 목소리를 같은 조건으로 비교하기 위해 적용한 기준입니다.</p></div></div>
+      <div class="method">
+        <section>
+          <h3>비교 조건</h3>
+          <ul>
+            <li>목소리: 진희, 은솔</li>
+            <li>톤: 감정 효과를 최소화한 기본 읽기</li>
+            <li>속도와 음높이: 기본값 유지</li>
+            <li>파일 형식: MP3</li>
+          </ul>
+        </section>
+        <section>
+          <h3>단어 전용 오디오 제작</h3>
+          <ul>
+            <li>앞문맥을 넣어 단어 끝 억양이 자연스럽게 들리도록 생성</li>
+            <li>생성된 문장에서 표제어 구간만 분리</li>
+            <li>띄어쓰기 있는 표제어도 전체 구간을 유지</li>
+            <li>원본과 분리본을 함께 보관해 청취 검수 가능</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+    <p class="foot">비교 목적의 샘플입니다. 표기·발음 예외, 끝 음절, 감탄사 등은 전체 생성 전에 별도 청취 검수를 권장합니다.</p>
+  </main>
+  <script>
+    const rows = [
+      ['가게','일반'],['가격','일반'],['가깝다','일반'],['가꾸다','일반'],['가이드','일반'],['가스레인지','일반'],['가지','일반'],['간','일반'],['가위','일반'],['회사','일반'],['영화','일반'],
+      ['정말','감탄사'],['안녕','감탄사'],['야호','감탄사'],['어휴','감탄사'],
+      ['ㄱ','특이 사례'],['가스 요금','특이 사례'],['깻잎','특이 사례'],['읽다','특이 사례'],['일기 예보','특이 사례']
+    ];
+    const sequence = ['가게','가격','가깝다','가꾸다','가이드','가스레인지','ㄱ','가스 요금','가지','간','가위','깻잎','읽다','정말','안녕','야호','어휴','일기 예보','회사','영화'];
+    const indexes = Object.fromEntries(sequence.map((word, index) => [word, String(index + 1).padStart(2,'0')]));
+    const root = document.getElementById('samples');
+    function render(filter='all') {
+      root.innerHTML = rows.filter(([, category]) => filter === 'all' || category === filter).map(([word, category]) => {
+        const index = indexes[word];
+        return `<tr><td class="word">${word}</td><td><span class="tag">${category}</span></td><td><audio controls preload="none" aria-label="진희 ${word}"><source src="audio/${index}_jinhee.mp3" type="audio/mpeg"></audio></td><td><audio controls preload="none" aria-label="은솔 ${word}"><source src="audio/${index}_eunsol.mp3" type="audio/mpeg"></audio></td></tr>`;
+      }).join('');
+    }
+    document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter]').forEach(item => item.setAttribute('aria-pressed','false'));
+      button.setAttribute('aria-pressed','true'); render(button.dataset.filter);
+    }));
+    render();
+  </script>
+</body>
+</html>

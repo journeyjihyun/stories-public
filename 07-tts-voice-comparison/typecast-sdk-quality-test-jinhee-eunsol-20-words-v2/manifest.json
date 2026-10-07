@@ -1,0 +1,618 @@
+{
+  "model": "ssfm-v30",
+  "prompt": {
+    "emotion": "normal",
+    "emotion_intensity": 0.0
+  },
+  "prefix": "다음 단어는 ",
+  "word_left": "'",
+  "word_right": "'",
+  "words": [
+    "가게",
+    "가격",
+    "가깝다",
+    "가꾸다",
+    "가이드",
+    "가스레인지",
+    "ㄱ",
+    "가스 요금",
+    "가지",
+    "간",
+    "가위",
+    "깻잎",
+    "읽다",
+    "정말",
+    "안녕",
+    "야호",
+    "어휴",
+    "일기 예보",
+    "회사",
+    "영화"
+  ],
+  "voices": {
+    "jinhee": "tc_6731b2b2478a48710ecc9158",
+    "eunsol": "tc_67db72eb93add6902ea41e5c"
+  },
+  "outputs": [
+    {
+      "voice": "jinhee",
+      "word": "가게",
+      "input": "다음 단어는 '가게'.",
+      "segments": [
+        {
+          "text": "'가게'.",
+          "start": 0.871,
+          "end": 1.6
+        }
+      ],
+      "crop_start_seconds": 0.871,
+      "crop_end_seconds": 1.646
+    },
+    {
+      "voice": "jinhee",
+      "word": "가격",
+      "input": "다음 단어는 '가격'.",
+      "segments": [
+        {
+          "text": "'가격'.",
+          "start": 0.911,
+          "end": 1.6
+        }
+      ],
+      "crop_start_seconds": 0.911,
+      "crop_end_seconds": 1.646
+    },
+    {
+      "voice": "jinhee",
+      "word": "가깝다",
+      "input": "다음 단어는 '가깝다'.",
+      "segments": [
+        {
+          "text": "'가깝다'.",
+          "start": 0.885,
+          "end": 1.75
+        }
+      ],
+      "crop_start_seconds": 0.885,
+      "crop_end_seconds": 1.776
+    },
+    {
+      "voice": "jinhee",
+      "word": "가꾸다",
+      "input": "다음 단어는 '가꾸다'.",
+      "segments": [
+        {
+          "text": "'가꾸다'.",
+          "start": 0.85,
+          "end": 1.7
+        }
+      ],
+      "crop_start_seconds": 0.85,
+      "crop_end_seconds": 1.75
+    },
+    {
+      "voice": "jinhee",
+      "word": "가이드",
+      "input": "다음 단어는 '가이드'.",
+      "segments": [
+        {
+          "text": "'가이드'.",
+          "start": 0.905,
+          "end": 1.65
+        }
+      ],
+      "crop_start_seconds": 0.905,
+      "crop_end_seconds": 1.698
+    },
+    {
+      "voice": "jinhee",
+      "word": "가스레인지",
+      "input": "다음 단어는 '가스레인지'.",
+      "segments": [
+        {
+          "text": "'가스레인지'.",
+          "start": 0.929,
+          "end": 2.0
+        }
+      ],
+      "crop_start_seconds": 0.929,
+      "crop_end_seconds": 2.038
+    },
+    {
+      "voice": "jinhee",
+      "word": "ㄱ",
+      "input": "다음 단어는 'ㄱ'.",
+      "segments": [
+        {
+          "text": "'ㄱ'.",
+          "start": 0.812,
+          "end": 1.3
+        }
+      ],
+      "crop_start_seconds": 0.812,
+      "crop_end_seconds": 1.332
+    },
+    {
+      "voice": "jinhee",
+      "word": "가스 요금",
+      "input": "다음 단어는 '가스 요금'.",
+      "segments": [
+        {
+          "text": "'가스",
+          "start": 0.83,
+          "end": 1.174
+        },
+        {
+          "text": "요금'.",
+          "start": 1.235,
+          "end": 1.7
+        }
+      ],
+      "crop_start_seconds": 0.83,
+      "crop_end_seconds": 1.75
+    },
+    {
+      "voice": "jinhee",
+      "word": "가지",
+      "input": "다음 단어는 '가지'.",
+      "segments": [
+        {
+          "text": "'가지'.",
+          "start": 0.866,
+          "end": 1.55
+        }
+      ],
+      "crop_start_seconds": 0.866,
+      "crop_end_seconds": 1.593
+    },
+    {
+      "voice": "jinhee",
+      "word": "간",
+      "input": "다음 단어는 '간'.",
+      "segments": [
+        {
+          "text": "'간'.",
+          "start": 0.831,
+          "end": 1.5
+        }
+      ],
+      "crop_start_seconds": 0.831,
+      "crop_end_seconds": 1.541
+    },
+    {
+      "voice": "jinhee",
+      "word": "가위",
+      "input": "다음 단어는 '가위'.",
+      "segments": [
+        {
+          "text": "'가위'.",
+          "start": 0.831,
+          "end": 1.5
+        }
+      ],
+      "crop_start_seconds": 0.831,
+      "crop_end_seconds": 1.541
+    },
+    {
+      "voice": "jinhee",
+      "word": "깻잎",
+      "input": "다음 단어는 '깻잎'.",
+      "segments": [
+        {
+          "text": "'깻잎'.",
+          "start": 0.846,
+          "end": 1.45
+        }
+      ],
+      "crop_start_seconds": 0.846,
+      "crop_end_seconds": 1.489
+    },
+    {
+      "voice": "jinhee",
+      "word": "읽다",
+      "input": "다음 단어는 '읽다'.",
+      "segments": [
+        {
+          "text": "'읽다'.",
+          "start": 0.886,
+          "end": 1.55
+        }
+      ],
+      "crop_start_seconds": 0.886,
+      "crop_end_seconds": 1.593
+    },
+    {
+      "voice": "jinhee",
+      "word": "정말",
+      "input": "다음 단어는 '정말'.",
+      "segments": [
+        {
+          "text": "'정말'.",
+          "start": 0.851,
+          "end": 1.6
+        }
+      ],
+      "crop_start_seconds": 0.851,
+      "crop_end_seconds": 1.646
+    },
+    {
+      "voice": "jinhee",
+      "word": "안녕",
+      "input": "다음 단어는 '안녕'.",
+      "segments": [
+        {
+          "text": "'안녕'.",
+          "start": 1.052,
+          "end": 1.7
+        }
+      ],
+      "crop_start_seconds": 1.052,
+      "crop_end_seconds": 1.75
+    },
+    {
+      "voice": "jinhee",
+      "word": "야호",
+      "input": "다음 단어는 '야호'.",
+      "segments": [
+        {
+          "text": "'야호'.",
+          "start": 0.845,
+          "end": 1.55
+        }
+      ],
+      "crop_start_seconds": 0.845,
+      "crop_end_seconds": 1.593
+    },
+    {
+      "voice": "jinhee",
+      "word": "어휴",
+      "input": "다음 단어는 '어휴'.",
+      "segments": [
+        {
+          "text": "'어휴'.",
+          "start": 0.845,
+          "end": 1.65
+        }
+      ],
+      "crop_start_seconds": 0.845,
+      "crop_end_seconds": 1.698
+    },
+    {
+      "voice": "jinhee",
+      "word": "일기 예보",
+      "input": "다음 단어는 '일기 예보'.",
+      "segments": [
+        {
+          "text": "'일기",
+          "start": 0.91,
+          "end": 1.273
+        },
+        {
+          "text": "예보'.",
+          "start": 1.334,
+          "end": 1.9
+        }
+      ],
+      "crop_start_seconds": 0.91,
+      "crop_end_seconds": 1.933
+    },
+    {
+      "voice": "jinhee",
+      "word": "회사",
+      "input": "다음 단어는 '회사'.",
+      "segments": [
+        {
+          "text": "'회사'.",
+          "start": 0.931,
+          "end": 1.7
+        }
+      ],
+      "crop_start_seconds": 0.931,
+      "crop_end_seconds": 1.75
+    },
+    {
+      "voice": "jinhee",
+      "word": "영화",
+      "input": "다음 단어는 '영화'.",
+      "segments": [
+        {
+          "text": "'영화'.",
+          "start": 0.965,
+          "end": 1.85
+        }
+      ],
+      "crop_start_seconds": 0.965,
+      "crop_end_seconds": 1.881
+    },
+    {
+      "voice": "eunsol",
+      "word": "가게",
+      "input": "다음 단어는 '가게'.",
+      "segments": [
+        {
+          "text": "'가게'.",
+          "start": 1.151,
+          "end": 2.1
+        }
+      ],
+      "crop_start_seconds": 1.151,
+      "crop_end_seconds": 2.142
+    },
+    {
+      "voice": "eunsol",
+      "word": "가격",
+      "input": "다음 단어는 '가격'.",
+      "segments": [
+        {
+          "text": "'가격'.",
+          "start": 0.966,
+          "end": 1.75
+        }
+      ],
+      "crop_start_seconds": 0.966,
+      "crop_end_seconds": 1.776
+    },
+    {
+      "voice": "eunsol",
+      "word": "가깝다",
+      "input": "다음 단어는 '가깝다'.",
+      "segments": [
+        {
+          "text": "'가깝다'.",
+          "start": 0.99,
+          "end": 1.9
+        }
+      ],
+      "crop_start_seconds": 0.99,
+      "crop_end_seconds": 1.933
+    },
+    {
+      "voice": "eunsol",
+      "word": "가꾸다",
+      "input": "다음 단어는 '가꾸다'.",
+      "segments": [
+        {
+          "text": "'가꾸다'.",
+          "start": 1.146,
+          "end": 2.05
+        }
+      ],
+      "crop_start_seconds": 1.146,
+      "crop_end_seconds": 2.09
+    },
+    {
+      "voice": "eunsol",
+      "word": "가이드",
+      "input": "다음 단어는 '가이드'.",
+      "segments": [
+        {
+          "text": "'가이드'.",
+          "start": 1.03,
+          "end": 2.0
+        }
+      ],
+      "crop_start_seconds": 1.03,
+      "crop_end_seconds": 2.038
+    },
+    {
+      "voice": "eunsol",
+      "word": "가스레인지",
+      "input": "다음 단어는 '가스레인지'.",
+      "segments": [
+        {
+          "text": "'가스레인지'.",
+          "start": 0.945,
+          "end": 2.05
+        }
+      ],
+      "crop_start_seconds": 0.945,
+      "crop_end_seconds": 2.09
+    },
+    {
+      "voice": "eunsol",
+      "word": "ㄱ",
+      "input": "다음 단어는 'ㄱ'.",
+      "segments": [
+        {
+          "text": "'ㄱ'.",
+          "start": 1.092,
+          "end": 1.8
+        }
+      ],
+      "crop_start_seconds": 1.092,
+      "crop_end_seconds": 1.829
+    },
+    {
+      "voice": "eunsol",
+      "word": "가스 요금",
+      "input": "다음 단어는 '가스 요금'.",
+      "segments": [
+        {
+          "text": "'가스",
+          "start": 0.925,
+          "end": 1.226
+        },
+        {
+          "text": "요금'.",
+          "start": 1.286,
+          "end": 2.05
+        }
+      ],
+      "crop_start_seconds": 0.925,
+      "crop_end_seconds": 2.09
+    },
+    {
+      "voice": "eunsol",
+      "word": "가지",
+      "input": "다음 단어는 '가지'.",
+      "segments": [
+        {
+          "text": "'가지'.",
+          "start": 0.986,
+          "end": 1.75
+        }
+      ],
+      "crop_start_seconds": 0.986,
+      "crop_end_seconds": 1.776
+    },
+    {
+      "voice": "eunsol",
+      "word": "간",
+      "input": "다음 단어는 '간'.",
+      "segments": [
+        {
+          "text": "'간'.",
+          "start": 1.011,
+          "end": 1.8
+        }
+      ],
+      "crop_start_seconds": 1.011,
+      "crop_end_seconds": 1.829
+    },
+    {
+      "voice": "eunsol",
+      "word": "가위",
+      "input": "다음 단어는 '가위'.",
+      "segments": [
+        {
+          "text": "'가위'.",
+          "start": 1.031,
+          "end": 1.9
+        }
+      ],
+      "crop_start_seconds": 1.031,
+      "crop_end_seconds": 1.933
+    },
+    {
+      "voice": "eunsol",
+      "word": "깻잎",
+      "input": "다음 단어는 '깻잎'.",
+      "segments": [
+        {
+          "text": "'깻잎'.",
+          "start": 1.066,
+          "end": 1.85
+        }
+      ],
+      "crop_start_seconds": 1.066,
+      "crop_end_seconds": 1.881
+    },
+    {
+      "voice": "eunsol",
+      "word": "읽다",
+      "input": "다음 단어는 '읽다'.",
+      "segments": [
+        {
+          "text": "'읽다'.",
+          "start": 0.97,
+          "end": 1.9
+        }
+      ],
+      "crop_start_seconds": 0.97,
+      "crop_end_seconds": 1.933
+    },
+    {
+      "voice": "eunsol",
+      "word": "정말",
+      "input": "다음 단어는 '정말'.",
+      "segments": [
+        {
+          "text": "'정말'.",
+          "start": 0.925,
+          "end": 1.75
+        }
+      ],
+      "crop_start_seconds": 0.925,
+      "crop_end_seconds": 1.776
+    },
+    {
+      "voice": "eunsol",
+      "word": "안녕",
+      "input": "다음 단어는 '안녕'.",
+      "segments": [
+        {
+          "text": "'안녕'.",
+          "start": 1.106,
+          "end": 1.95
+        }
+      ],
+      "crop_start_seconds": 1.106,
+      "crop_end_seconds": 1.985
+    },
+    {
+      "voice": "eunsol",
+      "word": "야호",
+      "input": "다음 단어는 '야호'.",
+      "segments": [
+        {
+          "text": "'야호'.",
+          "start": 1.051,
+          "end": 1.9
+        }
+      ],
+      "crop_start_seconds": 1.051,
+      "crop_end_seconds": 1.933
+    },
+    {
+      "voice": "eunsol",
+      "word": "어휴",
+      "input": "다음 단어는 '어휴'.",
+      "segments": [
+        {
+          "text": "'어휴'.",
+          "start": 1.03,
+          "end": 2.0
+        }
+      ],
+      "crop_start_seconds": 1.03,
+      "crop_end_seconds": 2.038
+    },
+    {
+      "voice": "eunsol",
+      "word": "일기 예보",
+      "input": "다음 단어는 '일기 예보'.",
+      "segments": [
+        {
+          "text": "'일기",
+          "start": 1.071,
+          "end": 1.354
+        },
+        {
+          "text": "예보'.",
+          "start": 1.414,
+          "end": 2.0
+        }
+      ],
+      "crop_start_seconds": 1.071,
+      "crop_end_seconds": 2.038
+    },
+    {
+      "voice": "eunsol",
+      "word": "회사",
+      "input": "다음 단어는 '회사'.",
+      "segments": [
+        {
+          "text": "'회사'.",
+          "start": 1.092,
+          "end": 1.8
+        }
+      ],
+      "crop_start_seconds": 1.092,
+      "crop_end_seconds": 1.829
+    },
+    {
+      "voice": "eunsol",
+      "word": "영화",
+      "input": "다음 단어는 '영화'.",
+      "segments": [
+        {
+          "text": "'영화'.",
+          "start": 0.986,
+          "end": 1.75
+        }
+      ],
+      "crop_start_seconds": 0.986,
+      "crop_end_seconds": 1.776
+    }
+  ]
+}
