@@ -36,6 +36,15 @@ def load_shared_strings(book):
     return ["".join(node.text or "" for node in item.iter(MAIN + "t")) for item in root.findall("m:si", NS)]
 
 
+def load_number_formats(book):
+    try:
+        root = ET.fromstring(book.read("xl/styles.xml"))
+    except KeyError:
+        return []
+    formats = root.find("m:cellXfs", NS)
+    return [int(item.get("numFmtId", "0")) for item in formats] if formats is not None else []
+
+
 def sheet_paths(book):
     workbook = ET.fromstring(book.read("xl/workbook.xml"))
     rels = ET.fromstring(book.read("xl/_rels/workbook.xml.rels"))
@@ -48,7 +57,7 @@ def sheet_paths(book):
     return sheets
 
 
-def cell_text(cell, strings):
+def cell_text(cell, strings, number_formats):
     kind = cell.get("t")
     if kind == "inlineStr":
         return "".join(node.text or "" for node in cell.iter(MAIN + "t"))
@@ -58,17 +67,34 @@ def cell_text(cell, strings):
         return strings[int(raw)]
     if kind == "b":
         return "TRUE" if raw == "1" else "FALSE"
+    if raw and kind in (None, "n"):
+        try:
+            number = float(raw)
+            style_index = int(cell.get("s", "0"))
+            number_format = number_formats[style_index] if style_index < len(number_formats) else 0
+            if number_format == 9:
+                return f"{number * 100:.0f}%"
+            if number_format == 10:
+                return f"{number * 100:.2f}%"
+            if number_format == 3:
+                return f"{number:,.0f}"
+            if number_format == 4:
+                return f"{number:,.2f}"
+            if number.is_integer():
+                return str(int(number))
+        except ValueError:
+            pass
     return raw
 
 
-def iter_rows(book, path, strings):
+def iter_rows(book, path, strings, number_formats):
     with book.open(path) as stream:
         for _, row in ET.iterparse(stream, events=("end",)):
             if row.tag != MAIN + "row":
                 continue
             values = {}
             for cell in row.findall("m:c", NS):
-                values[col_number(cell.get("r", "A1"))] = cell_text(cell, strings)
+                values[col_number(cell.get("r", "A1"))] = cell_text(cell, strings, number_formats)
             yield int(row.get("r", "0")), values
             row.clear()
 
@@ -112,6 +138,7 @@ def main():
 
     with zipfile.ZipFile(args.input) as book:
         strings = load_shared_strings(book)
+        number_formats = load_number_formats(book)
         sheets = sheet_paths(book)
         if args.sheet_name:
             candidates = [entry for entry in sheets if entry[0] == args.sheet_name]
@@ -124,7 +151,7 @@ def main():
             raise SystemExit(f"검수 탭을 하나로 특정할 수 없습니다. --sheet-name을 지정하세요. 탭: {available}")
 
         sheet_name, xml_path = candidates[0]
-        rows = iter_rows(book, xml_path, strings)
+        rows = iter_rows(book, xml_path, strings, number_formats)
         try:
             header_row, header_cells = next(rows)
         except StopIteration:
