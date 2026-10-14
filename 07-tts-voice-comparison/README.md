@@ -6,6 +6,7 @@
 
 - `typecast_context_cut_test.py`: Typecast API로 음원을 생성하고 timestamp를 이용해 단어 구간을 MP3로 절단합니다.
 - `recut_typecast_word_clips.py`: 이미 저장한 전체 문장 음원과 `manifest.json`만으로 다시 절단합니다. API를 호출하지 않습니다.
+- `analyze_tts_pitch.py`: 최종 재생 MP3의 F0(기본주파수) 변화로 끝 억양의 상승 후보를 찾습니다. API를 호출하지 않습니다.
 - `typecast-sdk-quality-test-jinhee-eunsol-20-words-v2/`: 최종 비교 샘플 20개, 진희·은솔 음원, 원본 문장 음원, 절단 기준이 담긴 매니페스트입니다.
 - `dist/`: 외부 공유용 비교 페이지와 재생용 최종 클립입니다.
 
@@ -15,6 +16,7 @@
 - FFmpeg (시스템 PATH에서 `ffmpeg` 명령을 실행할 수 있어야 함)
 - Typecast API 키
 - `typecast-python==0.5.2`
+- `praat-parselmouth==0.4.7` (Praat 기반 음성 F0 분석)
 
 ```powershell
 python -m venv .venv
@@ -80,6 +82,35 @@ $env:TYPECAST_RECUT_INPUT_DIR = ".\typecast-output-example"
 $env:TYPECAST_RECUT_OUTPUT_DIR = ".\typecast-output-example\word-only-recut"
 python .\recut_typecast_word_clips.py
 ```
+
+## 끝 억양 피치 분석
+
+파형의 높낮이는 음량이므로 억양 판단에 직접 쓰지 않습니다. 대신 Praat 기반
+`praat-parselmouth`로 F0(기본주파수)를 10ms 간격으로 추출합니다. 무성 자음,
+무음, 잘린 음원 끝의 영향을 줄이기 위해 실제 유성 프레임만 사용하고, 유성 시간의
+앞 10%와 뒤 7%를 제외한 뒤 후반 55%를 분석합니다.
+
+후반부 F0는 각 클립의 중앙 F0를 기준으로 반음(semitone)으로 바꿉니다. 아래 두
+값을 함께 계산합니다.
+
+- `rise_st`: 후반부 첫 1/3과 마지막 1/3의 중앙값 차이
+- `slope_st_per_sec`: 후반부 F0의 시간 대비 선형 기울기
+
+현재 비교 샘플의 **명확한 끝올림 이슈 후보** 기준은 `rise_st >= +2.0` 이면서
+`slope_st_per_sec >= +20.0`입니다. 이 값은 보편적인 음성 품질 기준이 아니라,
+현재 20개 단어 × 진희·은솔 샘플을 듣고 보정한 QA 선별 기준입니다. 전체 생성 전에는
+표본을 더 늘려 기준을 다시 확인해야 합니다.
+
+```powershell
+python .\analyze_tts_pitch.py
+```
+
+기본값은 `dist/audio/`의 최종 재생 클립 40개를 분석합니다. 현재 검증에서는
+`정말 · 진희`만 이슈 후보로 나왔습니다(`rise_st = +2.75`,
+`slope_st_per_sec = +31.82`). 나머지 39개는 기준 미만이었습니다.
+
+이 환경에서 40개 분석은 약 25초(클립당 약 0.6초)였으며, Typecast API 호출이나
+오디오 생성 시간은 포함하지 않습니다.
 
 ## 외부 비교 페이지
 
