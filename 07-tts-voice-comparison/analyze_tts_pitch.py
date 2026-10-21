@@ -19,8 +19,8 @@ def semitones(f0: np.ndarray) -> np.ndarray:
     return 12 * np.log2(f0 / np.median(f0))
 
 
-def measure(audio_path: Path) -> dict[str, float | int | None]:
-    sound = parselmouth.Sound(str(audio_path))
+def measure(audio_path: Path | parselmouth.Sound) -> dict[str, float | int | None]:
+    sound = audio_path if isinstance(audio_path, parselmouth.Sound) else parselmouth.Sound(str(audio_path))
     pitch = sound.to_pitch_ac(time_step=0.01, pitch_floor=80, pitch_ceiling=700)
     times = pitch.xs()
     f0 = pitch.selected_array["frequency"]
