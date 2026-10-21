@@ -1,0 +1,4 @@
+typecast-python==0.5.2
+numpy==2.4.6
+soundfile==0.14.0
+praat-parselmouth==0.4.7
