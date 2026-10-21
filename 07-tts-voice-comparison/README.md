@@ -61,4 +61,14 @@ python process.py --input output-generated --output output-manual --overrides ov
 
 가공 출력은 항상 새 폴더를 지정합니다. S3/CDN 업로드는 수행하지 않습니다.
 
+## 3. 검수
+
+가공 시 함께 생성된 `output-processed/index.html`을 브라우저에서 엽니다.
+처음부터 연속 재생하거나 단어별로 듣고, 이상 표시와 코멘트를 남길 수 있습니다.
+재생 오류가 나면 연속 재생을 멈춥니다. `index.html`과 `clips/`는 함께 유지하세요.
+
+검수 기록은 브라우저에 자동 저장되며 원본 manifest를 수정하지 않습니다.
+로컬 파일의 저장 지원은 브라우저마다 다르고, 파일 이동·브라우저 변경·데이터 삭제 시 기록이 사라질 수 있습니다.
+**검수 결과 내려받기**로 이상 표시·코멘트가 포함된 JSON을 보관하세요.
+
 테스트(API 호출 없음): `python -m unittest discover -s tests`

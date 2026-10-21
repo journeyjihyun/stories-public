@@ -3,15 +3,32 @@ import ast
 import subprocess
 import sys
 import tempfile
+import shutil
 import unittest
 from pathlib import Path
 import numpy as np
 import soundfile as sf
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from process import boundary
+from process import boundary, write_review
 
 
 class PipelineTests(unittest.TestCase):
+    def test_review_safe_embedding(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root/'audio.mp3').write_bytes(b'first')
+            rows = [dict(id='1', word='</script><script>alert(1)</script>', clip='audio.mp3', pitch_candidate=False)]
+            write_review(root, rows)
+            first = (root/'index.html').read_text(encoding='utf-8')
+            self.assertNotIn(rows[0]['word'], first)
+            payload = first.split('type="application/json">')[1].split('</script>')[0]
+            self.assertEqual(json.loads(payload)['rows'], rows)
+            if shutil.which('node'):
+                subprocess.run(['node', str(Path(__file__).with_name('review_ui.cjs'))], input=first, text=True, encoding='utf-8', check=True)
+            (root/'audio.mp3').write_bytes(b'second')
+            write_review(root, rows)
+            self.assertNotEqual(first, (root/'index.html').read_text(encoding='utf-8'))
+
     def test_algorithm_preserved(self):
         root = Path(__file__).resolve().parents[1]
         def functions(path):
@@ -52,6 +69,9 @@ class PipelineTests(unittest.TestCase):
             result=json.loads((root/'result/manifest.json').read_text(encoding='utf-8'))
             self.assertEqual(result['results'][0]['start'],.95)
             self.assertGreater(sf.info(root/'result/clips/0001.mp3').duration,0)
+            html = (root/'result/index.html').read_text(encoding='utf-8')
+            self.assertIn('처음부터 연속 재생', html)
+            self.assertIn('clips/0001.mp3', html)
 
 
 if __name__=='__main__':

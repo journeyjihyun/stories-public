@@ -1,6 +1,7 @@
 """Offline bidirectional trimming and pitch review flags; never calls the API."""
 import argparse
 import json
+import hashlib
 import os
 import subprocess
 from pathlib import Path
@@ -98,6 +99,63 @@ def is_rising_issue(metrics: dict[str, float | int | None]) -> bool:
 def read(path):
     return json.loads(path.read_text(encoding='utf-8'))
 
+def write_review(output, results):
+    """Self-contained local review UI; audio remains beside HTML in clips/."""
+    rows = [{k: r[k] for k in ('id', 'word', 'clip', 'pitch_candidate')} for r in results]
+    # Audio hashes isolate review notes even for newly generated versions of the same words.
+    digest = hashlib.sha256(json.dumps(rows, ensure_ascii=False).encode())
+    for row in rows:
+        digest.update((output/row['clip']).read_bytes())
+    payload = json.dumps(dict(batch=digest.hexdigest(), rows=rows), ensure_ascii=False).replace('<', '\\u003c')
+    page = r'''<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>단어 음원 검수</title>
+<style>body{font:16px system-ui;max-width:1000px;margin:30px auto;padding:0 18px;background:#f5f7fa;color:#183047}button,input,textarea{font:inherit}button{padding:8px 12px;cursor:pointer}header{position:sticky;top:0;background:#f5f7fa;padding:12px 0}article{display:grid;grid-template-columns:180px 90px 110px 1fr;gap:12px;align-items:center;padding:16px;background:white;border-bottom:1px solid #ddd}article.active{outline:2px solid #2974b8}textarea{width:95%;min-height:48px}small{display:block;color:#79510b}#status{min-height:24px}@media(max-width:650px){article{grid-template-columns:1fr 1fr}textarea{grid-column:1/-1}}</style>
+<h1>단어 음원 검수</h1><p>연속 재생 중에도 이상 표시와 코멘트를 입력할 수 있습니다. 피치 표시는 자동 검수 후보이며 정상 여부를 보장하지 않습니다.</p>
+<p>기록은 이 브라우저에 저장됩니다. 파일 이동·브라우저 변경 시 유지되지 않을 수 있으니 검수 결과를 내려받아 보관하세요.</p>
+<header><button id="start">처음부터 연속 재생</button> <button id="stop">정지</button> <button id="export">검수 결과 내려받기</button><p id="status" role="status" aria-live="polite"></p><audio id="player" controls></audio></header>
+<main id="list"></main>
+<script id="data" type="application/json">__PAYLOAD__</script>
+<script>
+'use strict';
+const data=JSON.parse(document.getElementById('data').textContent), rows=data.rows;
+const key='tts-review-v1:'+data.batch, player=document.getElementById('player'), status=document.getElementById('status');
+let notes={}, current=-1, continuous=false, token=0, storageWarning='';
+try{const saved=JSON.parse(localStorage.getItem(key)||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))notes=saved;}
+catch(e){storageWarning=' 자동 저장 불가: 검수 결과를 반드시 내려받으세요.';}
+function message(text){status.textContent=text+storageWarning;}
+function save(){try{localStorage.setItem(key,JSON.stringify(notes));}catch(e){storageWarning=' 자동 저장 불가: 검수 결과를 반드시 내려받으세요.';}message('검수 기록 '+Object.values(notes).filter(n=>n.issue).length+'개 이상 표시');}
+const elements=[];
+rows.forEach((r,i)=>{
+  const article=document.createElement('article'), title=document.createElement('div');
+  title.textContent=(i+1)+'. '+r.word;
+  if(r.pitch_candidate){const hint=document.createElement('small');hint.textContent='피치 상승 후보';title.append(hint);}
+  const play=document.createElement('button');play.textContent='재생';play.setAttribute('aria-label',r.word+' 재생');play.onclick=()=>playAt(i,false);
+  const label=document.createElement('label'), flag=document.createElement('input');flag.type='checkbox';flag.checked=notes[r.id]?.issue===true;label.append(flag,' 이상');
+  const comment=document.createElement('textarea');comment.placeholder='코멘트';comment.setAttribute('aria-label',r.word+' 코멘트');comment.value=typeof notes[r.id]?.comment==='string'?notes[r.id].comment:'';
+  const update=()=>{notes[r.id]={issue:flag.checked,comment:comment.value};save();};flag.onchange=update;comment.oninput=update;
+  article.append(title,play,label,comment);document.getElementById('list').append(article);elements.push(article);
+});
+function stop(){token++;continuous=false;player.pause();}
+async function playAt(i,sequence){
+  const request=++token;player.pause();continuous=sequence;current=i;
+  elements.forEach((el,j)=>el.classList.toggle('active',j===i));
+  player.src=rows[i].clip;message((i+1)+' / '+rows.length+' — '+rows[i].word);
+  try{await player.play();}catch(e){if(request===token){continuous=false;message('재생 실패: '+rows[i].word+' — 파일 위치를 확인하고 재생 버튼을 눌러주세요.');}}
+}
+player.onended=()=>{if(continuous&&current+1<rows.length)playAt(current+1,true);else{continuous=false;message('재생 완료');}};
+player.onerror=()=>{continuous=false;message('음원 로드 실패 — clips 폴더를 함께 유지해 주세요.');};
+document.getElementById('start').onclick=()=>{if(rows.length)playAt(0,true);};
+document.getElementById('stop').onclick=()=>{stop();message('정지');};
+document.getElementById('export').onclick=()=>{
+  const result={batch:data.batch,exported_at:new Date().toISOString(),items:rows.map(r=>({...r,issue:notes[r.id]?.issue===true,comment:notes[r.id]?.comment||''}))};
+  const url=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:'application/json'}));
+  const a=document.createElement('a');a.href=url;a.download='review-'+data.batch.slice(0,12)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+message(rows.length+'개 음원');
+</script></html>'''
+    (output/'index.html').write_text(page.replace('__PAYLOAD__', payload), encoding='utf-8')
+
 def recut(args):
     manifest=read(args.input/'manifest.json')
     if not manifest.get('complete'):
@@ -134,6 +192,7 @@ def recut(args):
              seconds=len(audio)/rate,pitch=metrics,pitch_candidate=is_rising_issue(metrics)))
     save(args.output/'manifest.json',dict(settings=manifest['settings'],results=results,
              complete=True,total_seconds=sum(r['seconds'] for r in results)))
+    write_review(args.output, results)
     print(f'Cut and decoded {len(results)} clips; pitch candidates: {sum(r["pitch_candidate"] for r in results)}')
 
 
