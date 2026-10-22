@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0단계 단어·표현 훈련 프로토타입</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{--ink:#1D1C1A;--muted:#6B675F;--sub:#4A4740;--ground:#F4F1EA;--line:#E2DDD3;--blue:#2B54C7;--blue-bg:#E3EAFB;--blue-ink:#1F3F99;--orange-bg:#FBEBDA;--orange-ink:#7A3D08}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);font-family:'Noto Sans KR',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+button:disabled{cursor:default}
+.wrap{max-width:1320px;margin:0 auto;padding:40px 16px;display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap}
+.phone{width:390px;max-width:100%;height:844px;flex-shrink:0;background:#fff;border-radius:40px;border:1px solid #DDD7CC;display:flex;flex-direction:column;overflow:hidden}
+.panel{flex:1 1 560px;min-width:0;display:flex;flex-direction:column;gap:18px}
+.scr{flex-grow:1;display:flex;flex-direction:column;gap:16px;padding:28px 22px;overflow-y:auto}
+.stage{flex-grow:1;display:flex;flex-direction:column;gap:16px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.grow{flex-grow:1}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.eyebrow{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.02em}
+.muted{font-size:14px;color:var(--muted);line-height:1.5;margin:0}
+.h{font-size:22px;font-weight:700;line-height:1.35;margin:0}
+.big{font-size:56px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.word{font-size:52px;font-weight:700}
+.btn,.btn2{min-height:54px;border:0;border-radius:14px;font-size:16px;font-weight:600;width:100%}
+.btn{background:var(--ink);color:#fff}
+.btn:disabled{background:#BDB7AB}
+.btn2{background:#EFEBE3;color:var(--ink)}
+.choice{display:flex;flex-direction:column;gap:8px}
+.track{position:relative;height:10px;border-radius:999px;background:#ECE8E0}
+.track.lg{height:14px}
+.fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--blue);transition:width .4s}
+.line{position:absolute;left:85%;top:-5px;bottom:-5px;width:2px;background:var(--ink)}
+.pill{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:var(--blue-bg);color:var(--blue-ink)}
+.cover{height:180px;border-radius:20px;background:#E9E3D6;padding:20px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.wchip{min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 4px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+.wchip.on{background:var(--blue-bg);border-color:var(--blue)}
+.wk{font-size:16px;font-weight:600;line-height:1.2}
+.wm{font-size:12px;line-height:1.2;color:var(--blue-ink);min-height:14px;text-align:center}
+.sec{font-size:13px;font-weight:700;color:var(--muted);margin-top:4px}
+.item{width:100%;min-height:60px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fff;text-align:left;color:var(--ink)}
+.item.done{background:var(--blue-bg);border-color:#B9C8F2}
+.item.locked{background:#F6F4EF;border-color:#ECE8E0;color:var(--muted)}
+.itxt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ititle{font-size:14px;font-weight:700}
+.isub{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item.locked .isub{color:var(--muted)}
+.badge{flex-shrink:0;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--ink);color:#fff}
+.badge.done{background:var(--blue)}
+.badge.locked{background:#D6D0C4;color:#3A3833}
+.opt{min-height:56px;border:1.5px solid var(--line);border-radius:14px;background:#fff;text-align:left;padding:0 18px;font-size:17px;color:var(--ink)}
+.opt.right{border-color:var(--blue);background:var(--blue-bg)}
+.opt.wrong{border-color:#B3261E;background:#FBE5E3}
+.opt.dim{color:var(--muted)}
+.tile{min-height:44px;padding:8px 14px;border-radius:12px;border:1.5px solid #D6D0C4;background:#fff;font-size:18px;color:var(--ink)}
+.tile.used{opacity:.25}
+.tile.slot{display:inline-flex;align-items:center;background:var(--blue-bg);border-color:#B9C8F2}
+.slotbox{min-height:68px;border:1.5px dashed #CFC8BA;border-radius:14px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tiles{display:flex;flex-wrap:wrap;gap:10px}
+.linkbtn{align-self:flex-start;min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #D6D0C4;background:#fff;font-size:13px;color:var(--sub)}
+.note{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:12px;background:var(--blue-bg);color:var(--blue-ink)}
+.ok{font-size:15px;font-weight:600;color:var(--blue-ink)}
+.ng{font-size:15px;font-weight:600;color:#B3261E}
+.card{background:#fff;border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:12px;border:1px solid #E4DFD5}
+.label{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+.presets{display:flex;flex-wrap:wrap;gap:8px}
+.preset{min-height:40px;padding:0 14px;border-radius:10px;border:1px solid #D6D0C4;background:#fff;font-size:14px;color:var(--ink)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.rule{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;border:1.5px solid #ECE8E0;font-size:14px;line-height:1.45}
+.rule.on{border-color:var(--ink);background:#F6F4EF}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{display:inline-block;padding:4px 10px;border-radius:999px;font-size:13px;background:var(--orange-bg);color:var(--orange-ink)}
+.chip.cur{box-shadow:inset 0 0 0 1.5px #B85C10}
+.chip.done{background:var(--blue);color:#fff}
+.chip.later{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 1px #A8A194}
+.chip.known,.chip.chunk{background:#F1EEE7;color:var(--sub)}
+.story{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));column-gap:28px}
+.sen{margin:0;font-size:15px;line-height:1.95;white-space:pre-wrap}
+.tk-pending{color:var(--muted);background:#F1EEE7;border-radius:4px}
+.tk-plan{color:var(--orange-ink);background:var(--orange-bg);border-radius:4px}
+.tk-learned{color:#fff;background:var(--blue);border-radius:4px}
+.tk-later{color:var(--muted);border-bottom:1.5px dashed #A8A194}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--sub)}
+.legend span span{padding:0 6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="phone" id="phone" aria-live="polite"></div>
+  <div class="panel" id="panel"></div>
+</div>
+<script src="logic.js"></script>
+<script>
+(function () {
+  'use strict';
+  var S = window.Stage0;
+  var phoneEl = document.getElementById('phone');
+  var panelEl = document.getElementById('panel');
+
+  function initState() {
+    return {
+      phase: 'intro', known: {}, learned: {}, plan: null,
+      setIdx: 0, stage: 'card', item: 0, revealed: false, picked: -1,
+      chunkSetIdx: 0, chunkQ: [], chunkI: 0, chunkPicked: [], chunkChecked: false, chunkHint: false,
+      doneChunks: {}, setStartCov: 0, justUnlocked: false
+    };
+  }
+  var st = initState();
+
+  function update(patch) { Object.assign(st, patch); render(); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function pct(x) { return Math.round(x * 100); }
+  function btn(cls, act, label, arg, extra) {
+    return '<button type="button" class="' + cls + '" data-act="' + act + '"' + (arg != null ? ' data-arg="' + esc(arg) + '"' : '') + (extra || '') + '>' + label + '</button>';
+  }
+  function track(cov, lg) {
+    return '<div class="track' + (lg ? ' lg' : '') + '"><div class="fill" style="width:' + pct(cov) + '%"></div><div class="line"></div></div>';
+  }
+
+  // ---------- 파생 값 ----------
+  function derive() {
+    var plan = st.plan, sets = plan ? plan.sets : [];
+    var tok = S.tokensOf(st.known);
+    var cov = tok / S.TOTAL;
+    var reached = tok >= S.NEED;
+    var remainSet = 0;
+    sets.forEach(function (set) { set.forEach(function (w) { if (!st.learned[w]) remainSet += 1; }); });
+    return {
+      plan: plan, sets: sets, tok: tok, cov: cov, reached: reached, remainSet: remainSet,
+      remainUnknown: S.WORDS.filter(function (x) { return !st.known[x.w]; }).length,
+      chunkLocked: S.isChunkLocked(plan, st.learned),
+      readCls: reached ? 'btn' : 'btn2',
+      listCls: reached ? 'btn2' : 'btn'
+    };
+  }
+
+  // ---------- 폰 화면 ----------
+  function viewIntro() {
+    return '<div class="scr">' +
+      '<div class="eyebrow">0단계 · 읽기 준비</div>' +
+      '<div class="cover"><div style="font-size:13px;color:#4A4740">Level 1 · 12문장</div><div style="font-size:28px;font-weight:700">민지의 아침</div></div>' +
+      '<div class="grow"></div>' +
+      '<p class="h">읽기 전에, 이 이야기에 나오는 단어 ' + S.WORDS.length + '개 중 아는 단어를 알려주세요</p>' +
+      '<p class="muted">1분이면 끝나요. 결과를 보고 바로 읽을지, 훈련부터 할지 고를 수 있어요.</p>' +
+      btn('btn', 'start', '시작하기') +
+      '</div>';
+  }
+
+  function viewCheck() {
+    var count = S.WORDS.filter(function (x) { return st.known[x.w]; }).length;
+    var chips = S.WORDS.map(function (x) {
+      var on = !!st.known[x.w];
+      return btn('wchip' + (on ? ' on' : ''), 'toggle', '<span class="wk">' + esc(x.w) + '</span><span class="wm">' + (on ? esc(x.m) : '') + '</span>', x.w, ' aria-pressed="' + on + '"');
+    }).join('');
+    return '<div class="scr" style="gap:12px">' +
+      '<div class="row"><div class="eyebrow">단어 체크</div><div class="eyebrow">아는 단어 ' + count + ' / ' + S.WORDS.length + '</div></div>' +
+      '<p class="h" style="font-size:19px">아는 단어를 눌러주세요</p>' +
+      '<p class="muted" style="font-size:13px">누르면 뜻이 보여요. 생각한 뜻과 다르면 다시 눌러 해제하세요.</p>' +
+      '<div class="grid3">' + chips + '</div>' +
+      '<div class="grow"></div>' +
+      btn('btn', 'finishCheck', '완료 · 아는 단어 ' + count + '개') +
+      '</div>';
+  }
+
+  function itemRow(cls, act, arg, title, sub, badge, bcls, disabled) {
+    return '<button type="button" class="item ' + cls + '" data-act="' + act + '" data-arg="' + arg + '"' + (disabled ? ' disabled' : '') + '>' +
+      '<span class="itxt"><span class="ititle">' + esc(title) + '</span><span class="isub">' + esc(sub) + '</span></span>' +
+      '<span class="badge ' + bcls + '">' + badge + '</span></button>';
+  }
+
+  function viewHub(d) {
+    var wordRows = d.sets.map(function (set, i) {
+      var done = S.isSetDone(set, st.learned);
+      return itemRow(done ? 'done' : '', 'startWord', i, '단어 세트 ' + (i + 1) + ' · ' + set.length + '단어', set.join(' · '), done ? '완료 · 다시' : '시작', done ? 'done' : '', false);
+    }).join('');
+    var chunkRows = S.CHUNK_SETS.map(function (ids, k) {
+      var done = ids.every(function (id) { return st.doneChunks[id]; });
+      var cls = d.chunkLocked ? 'locked' : (done ? 'done' : '');
+      return itemRow(cls, 'startChunk', k, '표현 만들기 ' + (k + 1) + ' · ' + ids.length + '개',
+        ids.map(function (id) { return S.CHUNK_BY_ID[id].en; }).join(' · '),
+        d.chunkLocked ? '잠김' : (done ? '완료 · 다시' : '시작'), cls, d.chunkLocked);
+    }).join('');
+    return '<div class="scr" style="gap:12px">' +
+      '<div class="eyebrow">민지의 아침 · 훈련 목록</div>' +
+      '<div style="display:flex;align-items:baseline;gap:10px"><div class="big" style="font-size:40px">' + pct(d.cov) + '%</div><p class="muted">이미 아는 단어 비율</p></div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px">' + track(d.cov) +
+      '<div style="display:flex;justify-content:flex-end;padding-right:8%;font-size:12px;color:#4A4740">읽기 가능선 85%</div></div>' +
+      '<p class="muted">' + (d.reached ? '바로 읽을 수 있어요. 훈련은 원하면 해요.' : '단어 ' + d.remainSet + '개를 더 알면 읽기 편해져요.') + '</p>' +
+      '<div class="sec">단어 세트</div>' +
+      (d.sets.length ? wordRows : '<p class="muted">필요한 단어 세트가 없어요.</p>') +
+      '<div class="sec">표현 만들기</div>' + chunkRows +
+      (d.chunkLocked ? '<p class="muted" style="font-size:13px">단어 세트를 1개 끝내면 열려요.</p>' : '') +
+      '<div class="grow"></div>' +
+      btn(d.readCls, 'goRead', '본문 읽기') +
+      '</div>';
+  }
+
+  function learnHeader(d) {
+    return '<div class="row"><div class="eyebrow">단어 세트 ' + (st.setIdx + 1) + ' / ' + d.sets.length + '</div>' +
+      '<div class="pill">읽기 준비 ' + pct(d.cov) + '% · 목표 85%</div></div>' + track(d.cov);
+  }
+
+  function quizOptions(word, item) {
+    var n = S.WORDS.length, wi = S.IDX[word], pos = item % 3;
+    var texts = [S.WORDS[(wi + 5) % n].m, S.WORDS[(wi + 11) % n].m];
+    texts.splice(pos, 0, S.MEANING[word]);
+    return { texts: texts, pos: pos };
+  }
+
+  function viewLearn(d) {
+    var set = d.sets[st.setIdx], word = set[st.item];
+    var body;
+    if (st.stage === 'card') {
+      body = '<div class="stage"><p class="muted">새 단어 ' + (st.item + 1) + ' / ' + set.length + '</p>' +
+        '<div class="grow center"><div class="word">' + esc(word) + '</div>' +
+        (st.revealed ? '<div style="font-size:22px;font-weight:600;color:#1F3F99">' + esc(S.MEANING[word]) + '</div><p class="muted">이 이야기에서 ' + S.WORDS[S.IDX[word]].c + '번 나와요</p>' : '') +
+        '</div>' + (st.revealed ? btn('btn', 'cardNext', '다음') : btn('btn2', 'reveal', '뜻 보기')) + '</div>';
+    } else {
+      var q = quizOptions(word, st.item);
+      var opts = q.texts.map(function (t, i) {
+        var cls = '';
+        if (st.picked >= 0) cls = i === q.pos ? 'right' : (i === st.picked ? 'wrong' : 'dim');
+        return btn('opt ' + cls, 'pick', esc(t), i);
+      }).join('');
+      body = '<div class="stage"><p class="muted">뜻 고르기 ' + (st.item + 1) + ' / ' + set.length + '</p>' +
+        '<div class="grow center"><div class="word">' + esc(word) + '</div></div>' +
+        '<div class="choice" style="gap:10px">' + opts + '</div>' +
+        (st.picked >= 0 ? btn('btn', 'quizNext', '다음') : '') + '</div>';
+    }
+    return '<div class="scr">' + learnHeader(d) + body + '</div>';
+  }
+
+  function viewChunk(d) {
+    var ch = S.CHUNK_BY_ID[st.chunkQ[st.chunkI]];
+    var slots = st.chunkPicked.map(function (i) { return '<span class="tile slot">' + esc(ch.pool[i]) + '</span>'; }).join('');
+    var pool = ch.pool.map(function (t, i) {
+      var used = st.chunkPicked.indexOf(i) >= 0;
+      return btn('tile' + (used ? ' used' : ''), 'tile', esc(t), i, used || st.chunkChecked ? ' disabled' : '');
+    }).join('');
+    var built = st.chunkPicked.map(function (i) { return ch.pool[i]; }).join(' ');
+    var right = built === ch.tiles.join(' ');
+    var hint = ch.words.map(function (w) { return w + ' = ' + S.MEANING[w]; }).join(' · ');
+    var footer;
+    if (st.chunkChecked) {
+      footer = (right ? '<div class="ok">맞아요! 본문에서 이 표현을 만나게 돼요.</div>' : '<div class="ng">정답: ' + esc(ch.tiles.join(' ')) + '</div>') + btn('btn', 'chunkNext', '다음');
+    } else {
+      footer = '<div style="display:flex;gap:10px">' + btn('btn2', 'chunkClear', '지우기') +
+        btn('btn', 'chunkCheck', '확인', null, st.chunkPicked.length !== ch.tiles.length ? ' disabled' : '') + '</div>';
+    }
+    return '<div class="scr">' +
+      '<div class="row"><div class="eyebrow">표현 만들기 ' + (st.chunkSetIdx + 1) + ' · ' + (st.chunkI + 1) + ' / ' + st.chunkQ.length + '</div><div class="pill">읽기 준비 ' + pct(d.cov) + '%</div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px"><p class="muted">이 이야기 속 표현이에요. 순서대로 눌러보세요.</p>' +
+      '<div style="font-size:21px;font-weight:600;line-height:1.4">“' + esc(ch.en) + '”</div></div>' +
+      '<div class="slotbox">' + (slots || '<span class="muted">여기에 표현이 만들어져요</span>') + '</div>' +
+      '<div class="tiles">' + pool + '</div>' +
+      (st.chunkHint ? '<p class="muted">' + esc(hint) + '</p>' : btn('linkbtn', 'hint', '단어 뜻 보기')) +
+      '<div class="grow"></div>' + footer + '</div>';
+  }
+
+  function doneChoice(d) {
+    return '<div class="choice">' + btn(d.readCls, 'goRead', '본문 읽기') + btn(d.listCls, 'goResult', '훈련 목록으로') + '</div>';
+  }
+
+  function viewWordDone(d) {
+    var set = d.sets[st.setIdx];
+    return '<div class="scr">' +
+      '<div class="eyebrow">단어 세트 ' + (st.setIdx + 1) + ' 완료</div>' +
+      '<div class="big" style="font-size:44px">' + pct(st.setStartCov) + '% → ' + pct(d.cov) + '%</div>' + track(d.cov) +
+      '<p class="muted">새로 익힌 단어 ' + set.length + '개</p>' +
+      '<p class="h">' + (d.reached ? '읽기 가능선을 넘었어요' : '단어 ' + d.remainSet + '개 남았어요') + '</p>' +
+      (st.justUnlocked ? '<div class="note"><b style="font-size:14px">표현 만들기가 열렸어요</b><span style="font-size:13px">훈련 목록에서 언제든 할 수 있어요.</span></div>' : '') +
+      '<div class="grow"></div>' + doneChoice(d) + '</div>';
+  }
+
+  function viewChunkDone(d) {
+    var count = S.CHUNKS.filter(function (c) { return st.doneChunks[c.id]; }).length;
+    return '<div class="scr">' +
+      '<div class="eyebrow">표현 만들기 ' + (st.chunkSetIdx + 1) + ' 완료</div>' +
+      '<div class="big" style="font-size:44px">' + count + ' / ' + S.CHUNKS.length + '</div>' +
+      '<p class="muted">이 이야기 속 표현 중 연습한 개수</p>' +
+      '<p class="h">본문에서 방금 만든 표현을 찾아보세요</p>' +
+      '<div class="grow"></div>' + doneChoice(d) + '</div>';
+  }
+
+  function viewRead(d) {
+    return '<div class="scr">' +
+      '<div class="eyebrow">본문으로 이동</div><div class="big">' + pct(d.cov) + '%</div>' +
+      '<p class="h">‘민지의 아침’ 본문</p>' +
+      '<p class="muted">여기서 원 콘텐츠(유료 본편)로 연결돼요. 남은 모르는 단어 ' + d.remainUnknown + '개는 본문의 단어 탭으로 확인해요.</p>' +
+      '<div class="grow"></div>' + btn('btn2', 'reset', '처음부터 다시') + '</div>';
+  }
+
+  // ---------- 기획자 뷰 ----------
+  function viewPanel(d) {
+    var plan = d.plan;
+    var inLearnFlow = st.phase === 'learn' || st.phase === 'wordDone';
+    var groups = '';
+    if (plan) {
+      var g = [];
+      plan.sets.forEach(function (set, i) {
+        var t = set.reduce(function (a, w) { return a + S.WORDS[S.IDX[w]].c; }, 0);
+        g.push(['단어 세트 ' + (i + 1), set.length + '단어 · +' + t + '토큰', set.map(function (w) {
+          return [w, st.learned[w] ? 'done' : (inLearnFlow && i === st.setIdx ? 'cur' : '')];
+        })]);
+      });
+      if (plan.later.length) g.push(['읽으며 익히기', plan.later.length + '단어 · 본문 단어 탭으로', plan.later.map(function (w) { return [w, 'later']; })]);
+      var pre = S.WORDS.filter(function (x) { return st.known[x.w] && !st.learned[x.w]; }).map(function (x) { return [x.w, 'known']; });
+      g.push(['이미 앎', pre.length + '단어', pre]);
+      g.push(['표현 만들기', '고정 ' + S.CHUNKS.length + '개 · 3개씩 2세트' + (d.chunkLocked ? ' · 잠김' : ''), S.CHUNKS.map(function (c) {
+        return [c.tiles.join(' '), st.doneChunks[c.id] ? 'done' : 'chunk'];
+      })]);
+      groups = g.map(function (x) {
+        return '<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:13px"><b>' + esc(x[0]) + '</b> <span style="color:#6B675F">· ' + esc(x[1]) + '</span></div>' +
+          '<div class="chips">' + x[2].map(function (c) { return '<span class="chip ' + c[1] + '">' + esc(c[0]) + '</span>'; }).join('') + '</div></div>';
+      }).join('');
+    }
+
+    function segCls(w) {
+      if (!w) return '';
+      if (!plan) return st.known[w] ? '' : 'tk-pending';
+      if (st.learned[w]) return 'tk-learned';
+      if (st.known[w]) return '';
+      if (plan.inPlan[w]) return 'tk-plan';
+      return 'tk-later';
+    }
+    var story = S.SENTENCES.map(function (segs) {
+      return '<p class="sen">' + segs.map(function (g) { var c = segCls(g.w); return c ? '<span class="' + c + '">' + esc(g.t) + '</span>' : esc(g.t); }).join('') + '</p>';
+    }).join('');
+
+    function rule(on, title, sub) { return '<div class="rule' + (on ? ' on' : '') + '"><b>' + title + '</b><span>' + sub + '</span></div>'; }
+
+    return '<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:26px;font-weight:700">0단계 학습 흐름</div>' +
+      '<p class="muted" style="font-size:15px">왼쪽 폰 화면을 직접 눌러보세요. 오른쪽은 기획자 뷰예요(유저에게 보이지 않음).</p></div>' +
+
+      '<div class="card"><div class="label">체크 건너뛰고 유저 유형별로 보기</div><div class="presets">' +
+      btn('preset', 'preset', '초급자 · 단어 조금 부족', 'learn') + btn('preset', 'preset', '중급자 · 바로 읽기 가능', 'read') +
+      btn('preset', 'preset', '입문자 · 단어 많이 부족', 'hard') + btn('preset', 'reset', '처음부터') + '</div></div>' +
+
+      '<div class="card"><div class="row" style="align-items:baseline"><div class="label">읽기 가능 구간</div>' +
+      '<div style="font-size:14px;color:#4A4740">아는 토큰 ' + d.tok + ' / ' + S.TOTAL + ' · <b>' + pct(d.cov) + '%</b></div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px">' + track(d.cov, true) +
+      '<div class="row" style="font-size:12px;color:#4A4740"><span>0%</span><span style="padding-right:6%">85% 읽기 가능선 (' + S.NEED + '토큰)</span></div></div>' +
+      (plan
+        ? '<div style="font-size:15px;line-height:1.6">모르는 단어 <b>' + (plan.learnCount + plan.later.length) + '개 전부</b>가 아니라, 85%선을 넘기는 데 필요한 <b>' + plan.learnCount + '개</b>만 단어 세트로 만들어요. 나머지 ' + plan.later.length + '개는 본문을 읽으며 익혀요.</div>'
+        : '<p class="muted">단어 체크를 마치면 학습 계획이 계산돼요. 토큰 = 이야기 속 단어 등장 횟수(같은 단어가 3번 나오면 3토큰).</p>') +
+      '</div>' +
+
+      '<div class="cols">' +
+      '<div class="card"><div class="label">훈련 목록 규칙</div>' +
+      '<p class="muted" style="font-size:13px;color:#1D1C1A">체크 후 훈련 목록 페이지로. 모든 훈련이 끝나면 이 페이지로 돌아와요.</p>' +
+      rule(plan && d.reached, '85% 이상 → 본문 읽기 강조', '훈련은 선택') +
+      rule(plan && !d.reached, '85% 미만 → 훈련 강조', '단어 세트는 순서 상관없이 선택') +
+      rule(plan && !d.chunkLocked, '표현 만들기 2세트 (고정 6개, 3개씩)', '단어 세트 1개 완료 시 열림. 단어 세트가 없으면 처음부터 열림') +
+      '</div>' +
+      '<div class="card"><div class="label">학습 계획</div>' +
+      '<p class="muted" style="font-size:13px">단어 세트: 모르는 단어를 등장 횟수 순으로 정렬 → 85%선까지 자름 → 5개씩</p>' +
+      (plan ? groups : '<p class="muted">체크 후 표시돼요.</p>') + '</div>' +
+      '</div>' +
+
+      '<div class="card"><div class="row" style="flex-wrap:wrap"><div class="label">본문 원문 (유저에게 비공개)</div>' +
+      '<div class="legend"><span><span class="tk-plan">단어</span> 세트 학습</span><span><span class="tk-learned">단어</span> 학습 완료</span><span><span class="tk-later">단어</span> 읽으며 익힘</span></div></div>' +
+      '<div class="story">' + story + '</div></div>';
+  }
+
+  // ---------- 렌더 ----------
+  function render() {
+    var d = derive();
+    var views = { intro: viewIntro, check: viewCheck, result: viewHub, learn: viewLearn, wordDone: viewWordDone, chunk: viewChunk, chunkDone: viewChunkDone, read: viewRead };
+    phoneEl.innerHTML = views[st.phase](d);
+    panelEl.innerHTML = viewPanel(d);
+  }
+
+  // ---------- 액션 ----------
+  function applyPreset(list) {
+    var known = {};
+    list.forEach(function (w) { known[w] = true; });
+    st = initState();
+    update({ phase: 'result', known: known, plan: S.buildPlan(known) });
+  }
+
+  var PRESETS = {
+    learn: function () { return ['커피', '친구', '좋다', '사람', '가다', '오늘', '정말', '그리고']; },
+    read: function () { return S.WORDS.map(function (x) { return x.w; }).filter(function (w) { return ['공기', '시원하다', '창문'].indexOf(w) < 0; }); },
+    hard: function () { return ['커피', '친구', '좋다']; }
+  };
+
+  var actions = {
+    start: function () { st = initState(); update({ phase: 'check' }); },
+    reset: function () { st = initState(); render(); },
+    preset: function (arg) { applyPreset(PRESETS[arg]()); },
+    toggle: function (w) {
+      var k = Object.assign({}, st.known);
+      if (k[w]) delete k[w]; else k[w] = true;
+      update({ known: k });
+    },
+    finishCheck: function () { update({ plan: S.buildPlan(st.known), phase: 'result' }); },
+    startWord: function (arg) {
+      update({ phase: 'learn', setIdx: +arg, stage: 'card', item: 0, revealed: false, picked: -1, setStartCov: S.coverage(st.known), justUnlocked: false });
+    },
+    startChunk: function (arg) {
+      if (S.isChunkLocked(st.plan, st.learned)) return;
+      update({ phase: 'chunk', chunkSetIdx: +arg, chunkQ: S.CHUNK_SETS[+arg].slice(), chunkI: 0, chunkPicked: [], chunkChecked: false, chunkHint: false });
+    },
+    reveal: function () { update({ revealed: true }); },
+    cardNext: function () {
+      var set = st.plan.sets[st.setIdx];
+      if (st.item < set.length - 1) update({ item: st.item + 1, revealed: false });
+      else update({ stage: 'quiz', item: 0, picked: -1 });
+    },
+    pick: function (arg) { if (st.picked < 0) update({ picked: +arg }); },
+    quizNext: function () {
+      var set = st.plan.sets[st.setIdx], w = set[st.item];
+      var known = Object.assign({}, st.known); known[w] = true;
+      var learned = Object.assign({}, st.learned); learned[w] = true;
+      if (st.item < set.length - 1) { update({ known: known, learned: learned, item: st.item + 1, picked: -1 }); return; }
+      var wasLocked = S.isChunkLocked(st.plan, st.learned);
+      update({ known: known, learned: learned, phase: 'wordDone', justUnlocked: wasLocked && !S.isChunkLocked(st.plan, learned) });
+    },
+    tile: function (arg) {
+      var i = +arg;
+      if (st.chunkChecked || st.chunkPicked.indexOf(i) >= 0) return;
+      update({ chunkPicked: st.chunkPicked.concat([i]) });
+    },
+    chunkClear: function () { if (!st.chunkChecked) update({ chunkPicked: [] }); },
+    chunkCheck: function () { update({ chunkChecked: true }); },
+    hint: function () { update({ chunkHint: true }); },
+    chunkNext: function () {
+      var dc = Object.assign({}, st.doneChunks);
+      dc[st.chunkQ[st.chunkI]] = true;
+      if (st.chunkI < st.chunkQ.length - 1) update({ doneChunks: dc, chunkI: st.chunkI + 1, chunkPicked: [], chunkChecked: false, chunkHint: false });
+      else update({ doneChunks: dc, phase: 'chunkDone' });
+    },
+    goRead: function () { update({ phase: 'read' }); },
+    goResult: function () { update({ phase: 'result' }); }
+  };
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-act]');
+    if (!el || el.disabled) return;
+    var fn = actions[el.getAttribute('data-act')];
+    if (fn) fn(el.getAttribute('data-arg'));
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
