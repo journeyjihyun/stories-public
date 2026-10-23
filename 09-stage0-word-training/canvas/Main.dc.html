@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>0단계 학습 흐름</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:'Noto Sans KR',system-ui,sans-serif;color:#1D1C1A;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+.scr{flex-grow:1;display:flex;flex-direction:column;gap:16px;padding:28px 22px}
+.stage{flex-grow:1;display:flex;flex-direction:column;gap:16px}
+.eyebrow{font-size:13px;font-weight:600;color:#6B675F;letter-spacing:.02em}
+.muted{font-size:14px;color:#6B675F;line-height:1.5}
+.h{font-size:22px;font-weight:700;line-height:1.35;margin:0}
+.big{font-size:56px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.btn{min-height:54px;border:0;border-radius:14px;background:#1D1C1A;color:#fff;font-size:16px;font-weight:600;width:100%}
+.btn:disabled{background:#BDB7AB;cursor:default}
+.btn2{min-height:54px;border:0;border-radius:14px;background:#EFEBE3;color:#1D1C1A;font-size:16px;font-weight:600;width:100%}
+.choice{display:flex;flex-direction:column;gap:8px}
+.track{position:relative;height:10px;border-radius:999px;background:#ECE8E0}
+.fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:#2B54C7;transition:width .4s}
+.line{position:absolute;left:85%;top:-5px;bottom:-5px;width:2px;background:#1D1C1A}
+.pill{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:#E3EAFB;color:#1F3F99}
+.opt{min-height:56px;border:1.5px solid #E2DDD3;border-radius:14px;background:#fff;text-align:left;padding:0 18px;font-size:17px;color:#1D1C1A}
+.opt.right{border-color:#2B54C7;background:#E3EAFB}
+.opt.wrong{border-color:#B3261E;background:#FBE5E3}
+.opt.dim{color:#6B675F}
+.tile{min-height:44px;padding:8px 14px;border-radius:12px;border:1.5px solid #D6D0C4;background:#fff;font-size:18px;color:#1D1C1A}
+.tile.used{opacity:.25;cursor:default}
+.tile.slot{display:inline-flex;align-items:center;background:#E3EAFB;border-color:#B9C8F2}
+.slotbox{min-height:68px;box-sizing:border-box;border:1.5px dashed #CFC8BA;border-radius:14px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.linkbtn{align-self:flex-start;min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #D6D0C4;background:#fff;font-size:13px;color:#4A4740}
+.setrow{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:12px;background:#F6F4EF}
+.setrow.done{background:#E3EAFB}
+.item{width:100%;min-height:60px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid #E2DDD3;border-radius:14px;background:#fff;text-align:left;color:#1D1C1A}
+.item.done{background:#E3EAFB;border-color:#B9C8F2}
+.item.locked{background:#F6F4EF;border-color:#ECE8E0;color:#6B675F;cursor:default}
+.itxt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ititle{font-size:14px;font-weight:700}
+.isub{font-size:13px;color:#4A4740;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item.locked .isub{color:#6B675F}
+.badge{flex-shrink:0;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:#1D1C1A;color:#fff}
+.badge.done{background:#2B54C7}
+.badge.locked{background:#D6D0C4;color:#3A3833}
+.sec{font-size:13px;font-weight:700;color:#6B675F;margin-top:4px}
+.wchip{min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 4px;border:1.5px solid #E2DDD3;border-radius:12px;background:#fff;color:#1D1C1A}
+.wchip.on{background:#E3EAFB;border-color:#2B54C7}
+.wk{font-size:16px;font-weight:600;line-height:1.2}
+.wm{font-size:12px;line-height:1.2;color:#1F3F99;min-height:14px;text-align:center}
+.card{background:#fff;border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:12px;border:1px solid #E4DFD5}
+.label{font-size:13px;font-weight:700;color:#6B675F;letter-spacing:.02em}
+.preset{min-height:40px;padding:0 14px;border-radius:10px;border:1px solid #D6D0C4;background:#fff;font-size:14px;color:#1D1C1A}
+.rule{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;border:1.5px solid #ECE8E0;font-size:14px;line-height:1.45}
+.rule.on{border-color:#1D1C1A;background:#F6F4EF}
+.chip{display:inline-block;padding:4px 10px;border-radius:999px;font-size:13px;background:#FBEBDA;color:#7A3D08}
+.chip.cur{box-shadow:inset 0 0 0 1.5px #B85C10}
+.chip.done{background:#2B54C7;color:#fff}
+.chip.later{background:transparent;color:#6B675F;box-shadow:inset 0 0 0 1px #A8A194}
+.chip.known{background:#F1EEE7;color:#4A4740}
+.chip.chunk{background:#F1EEE7;color:#1D1C1A}
+.sen{margin:0;font-size:15px;line-height:1.95;white-space:pre-wrap}
+.tk-other,.tk-known{color:#1D1C1A}
+.tk-pending{color:#6B675F;background:#F1EEE7;border-radius:4px}
+.tk-plan{color:#7A3D08;background:#FBEBDA;border-radius:4px}
+.tk-learned{color:#fff;background:#2B54C7;border-radius:4px}
+.tk-later{color:#6B675F;border-bottom:1.5px dashed #A8A194}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#4A4740}
+</style>
+</helmet>
+<div style="width: 1320px; height: 1060px; box-sizing: border-box; padding: 40px; background: #F4F1EA; display: flex; gap: 40px; align-items: flex-start">
+
+<div style="width: 390px; height: 844px; flex-shrink: 0; background: #FFFFFF; border-radius: 40px; border: 1px solid #DDD7CC; display: flex; flex-direction: column; overflow: hidden">
+
+<sc-if value="{{isIntro}}" hint-placeholder-val="{{true}}">
+<div class="scr">
+<div class="eyebrow">0단계 · 읽기 준비</div>
+<div style="height: 180px; border-radius: 20px; background: #E9E3D6; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px">
+<div style="font-size: 13px; color: #4A4740">Level 1 · 12문장</div>
+<div style="font-size: 28px; font-weight: 700">민지의 아침</div>
+</div>
+<div style="flex-grow: 1"></div>
+<p class="h">읽기 전에, 이 이야기에 나오는 단어 {{wordCount}}개 중 아는 단어를 알려주세요</p>
+<div class="muted">1분이면 끝나요. 결과를 보고 바로 읽을지, 훈련부터 할지 고를 수 있어요.</div>
+<button type="button" class="btn" onClick="{{start}}">시작하기</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isCheck}}" hint-placeholder-val="{{false}}">
+<div class="scr" style="gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div class="eyebrow">단어 체크</div>
+<div class="eyebrow">아는 단어 {{knownCount}} / {{wordCount}}</div>
+</div>
+<p class="h" style="font-size: 19px">아는 단어를 눌러주세요</p>
+<div class="muted" style="font-size: 13px">누르면 뜻이 보여요. 생각한 뜻과 다르면 다시 눌러 해제하세요.</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="24"><button type="button" class="wchip {{c.cls}}" onClick="{{c.toggle}}" aria-pressed="{{c.on}}"><span class="wk">{{c.w}}</span><span class="wm">{{c.m}}</span></button></sc-for>
+</div>
+<div style="flex-grow: 1"></div>
+<button type="button" class="btn" onClick="{{finishCheck}}">완료 · 아는 단어 {{knownCount}}개</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isResult}}" hint-placeholder-val="{{false}}">
+<div class="scr" style="gap: 12px">
+<div class="eyebrow">민지의 아침 · 훈련 목록</div>
+<div style="display: flex; align-items: baseline; gap: 10px">
+<div class="big" style="font-size: 40px">{{covPct}}%</div>
+<div class="muted">이미 아는 단어 비율</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div class="track"><div class="fill" style="width: {{covW}}"></div><div class="line"></div></div>
+<div style="display: flex; justify-content: flex-end; padding-right: 8%; font-size: 12px; color: #4A4740">읽기 가능선 85%</div>
+</div>
+<sc-if value="{{reached}}" hint-placeholder-val="{{false}}">
+<div class="muted">바로 읽을 수 있어요. 훈련은 원하면 해요.</div>
+</sc-if>
+<sc-if value="{{notReached}}" hint-placeholder-val="{{true}}">
+<div class="muted">단어 {{needCount}}개를 더 알면 읽기 편해져요.</div>
+</sc-if>
+<div class="sec">단어 세트</div>
+<sc-if value="{{noWordSets}}" hint-placeholder-val="{{false}}">
+<div class="muted">필요한 단어 세트가 없어요.</div>
+</sc-if>
+<sc-for list="{{resultSets}}" as="r" hint-placeholder-count="2">
+<button type="button" class="item {{r.cls}}" onClick="{{r.go}}"><span class="itxt"><span class="ititle">{{r.label}}</span><span class="isub">{{r.words}}</span></span><span class="badge {{r.bcls}}">{{r.badge}}</span></button>
+</sc-for>
+<div class="sec">표현 만들기</div>
+<sc-for list="{{chunkSets}}" as="k" hint-placeholder-count="2">
+<button type="button" class="item {{k.cls}}" onClick="{{k.go}}" disabled="{{k.locked}}"><span class="itxt"><span class="ititle">{{k.label}}</span><span class="isub">{{k.words}}</span></span><span class="badge {{k.bcls}}">{{k.badge}}</span></button>
+</sc-for>
+<sc-if value="{{chunkLocked}}" hint-placeholder-val="{{true}}">
+<div class="muted" style="font-size: 13px">단어 세트를 1개 끝내면 열려요.</div>
+</sc-if>
+<div style="flex-grow: 1"></div>
+<button type="button" class="{{readCls}}" onClick="{{goRead}}">본문 읽기</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isLearning}}" hint-placeholder-val="{{false}}">
+<div class="scr">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div class="eyebrow">단어 세트 {{setNo}} / {{setTotal}}</div>
+<div class="pill">읽기 준비 {{covPct}}% · 목표 85%</div>
+</div>
+<div class="track"><div class="fill" style="width: {{covW}}"></div><div class="line"></div></div>
+
+<sc-if value="{{isCard}}" hint-placeholder-val="{{true}}">
+<div class="stage">
+<div class="muted">새 단어 {{itemNo}} / {{itemTotal}}</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px">
+<div style="font-size: 52px; font-weight: 700">{{curWord}}</div>
+<sc-if value="{{revealed}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="font-size: 22px; font-weight: 600; color: #1F3F99">{{curMeaning}}</div>
+<div class="muted">이 이야기에서 {{curCount}}번 나와요</div>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{notRevealed}}" hint-placeholder-val="{{true}}">
+<button type="button" class="btn2" onClick="{{reveal}}">뜻 보기</button>
+</sc-if>
+<sc-if value="{{revealed}}" hint-placeholder-val="{{false}}">
+<button type="button" class="btn" onClick="{{cardNext}}">다음</button>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isQuiz}}" hint-placeholder-val="{{false}}">
+<div class="stage">
+<div class="muted">뜻 고르기 {{itemNo}} / {{itemTotal}}</div>
+<div style="flex-grow: 1; display: flex; align-items: center; justify-content: center">
+<div style="font-size: 52px; font-weight: 700">{{curWord}}</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{opts}}" as="o" hint-placeholder-count="3">
+<button type="button" class="opt {{o.cls}}" onClick="{{o.pick}}">{{o.t}}</button>
+</sc-for>
+</div>
+<sc-if value="{{answered}}" hint-placeholder-val="{{false}}">
+<button type="button" class="btn" onClick="{{quizNext}}">다음</button>
+</sc-if>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isChunk}}" hint-placeholder-val="{{false}}">
+<div class="scr">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div class="eyebrow">표현 만들기 {{chunkSetNo}} · {{chunkNo}} / {{chunkTotal}}</div>
+<div class="pill">읽기 준비 {{covPct}}%</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div class="muted">이 이야기 속 표현이에요. 순서대로 눌러보세요.</div>
+<div style="font-size: 21px; font-weight: 600; line-height: 1.4">“{{chunkEn}}”</div>
+</div>
+<div class="slotbox">
+<sc-if value="{{noSlots}}" hint-placeholder-val="{{true}}"><span class="muted">여기에 표현이 만들어져요</span></sc-if>
+<sc-for list="{{slots}}" as="x" hint-placeholder-count="0"><span class="tile slot">{{x.t}}</span></sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<sc-for list="{{pool}}" as="t" hint-placeholder-count="3">
+<button type="button" class="tile {{t.cls}}" onClick="{{t.pick}}">{{t.t}}</button>
+</sc-for>
+</div>
+<sc-if value="{{hintHidden}}" hint-placeholder-val="{{true}}">
+<button type="button" class="linkbtn" onClick="{{showHint}}">단어 뜻 보기</button>
+</sc-if>
+<sc-if value="{{hintShown}}" hint-placeholder-val="{{false}}">
+<div class="muted">{{hintText}}</div>
+</sc-if>
+<div style="flex-grow: 1"></div>
+<sc-if value="{{chunkRight}}" hint-placeholder-val="{{false}}">
+<div style="font-size: 15px; font-weight: 600; color: #1F3F99">맞아요! 본문에서 이 표현을 만나게 돼요.</div>
+</sc-if>
+<sc-if value="{{chunkWrong}}" hint-placeholder-val="{{false}}">
+<div style="font-size: 15px; font-weight: 600; color: #B3261E">정답: {{chunkAnswer}}</div>
+</sc-if>
+<sc-if value="{{chunkChecked}}" hint-placeholder-val="{{false}}">
+<button type="button" class="btn" onClick="{{chunkNext}}">다음</button>
+</sc-if>
+<sc-if value="{{chunkEditing}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; gap: 10px">
+<button type="button" class="btn2" onClick="{{chunkClear}}">지우기</button>
+<button type="button" class="btn" onClick="{{chunkCheck}}" disabled="{{cantCheck}}">확인</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isWordDone}}" hint-placeholder-val="{{false}}">
+<div class="scr">
+<div class="eyebrow">단어 세트 {{setNo}} 완료</div>
+<div class="big" style="font-size: 44px">{{beforePct}}% → {{covPct}}%</div>
+<div class="track"><div class="fill" style="width: {{covW}}"></div><div class="line"></div></div>
+<div class="muted">새로 익힌 단어 {{setLen}}개</div>
+<sc-if value="{{reached}}" hint-placeholder-val="{{true}}">
+<p class="h">읽기 가능선을 넘었어요</p>
+</sc-if>
+<sc-if value="{{notReached}}" hint-placeholder-val="{{false}}">
+<p class="h">단어 {{needCount}}개 남았어요</p>
+</sc-if>
+<sc-if value="{{justUnlocked}}" hint-placeholder-val="{{false}}">
+<div class="setrow done"><div style="font-size: 14px; font-weight: 700; color: #1F3F99">표현 만들기가 열렸어요</div><div style="font-size: 13px; color: #1F3F99">훈련 목록에서 언제든 할 수 있어요.</div></div>
+</sc-if>
+<div style="flex-grow: 1"></div>
+<div class="choice">
+<button type="button" class="{{readCls}}" onClick="{{goRead}}">본문 읽기</button>
+<button type="button" class="{{listCls}}" onClick="{{goResult}}">훈련 목록으로</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isChunkDone}}" hint-placeholder-val="{{false}}">
+<div class="scr">
+<div class="eyebrow">표현 만들기 {{chunkSetNo}} 완료</div>
+<div class="big" style="font-size: 44px">{{chunkDoneCount}} / {{chunkAll}}</div>
+<div class="muted">이 이야기 속 표현 중 연습한 개수</div>
+<p class="h">본문에서 방금 만든 표현을 찾아보세요</p>
+<div style="flex-grow: 1"></div>
+<div class="choice">
+<button type="button" class="{{readCls}}" onClick="{{goRead}}">본문 읽기</button>
+<button type="button" class="{{listCls}}" onClick="{{goResult}}">훈련 목록으로</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isRead}}" hint-placeholder-val="{{false}}">
+<div class="scr">
+<div class="eyebrow">본문으로 이동</div>
+<div class="big">{{covPct}}%</div>
+<p class="h">‘민지의 아침’ 본문</p>
+<div class="muted">여기서 원 콘텐츠(유료 본편)로 연결돼요. 남은 모르는 단어 {{remainUnknown}}개는 본문의 단어 탭으로 확인해요.</div>
+<div style="flex-grow: 1"></div>
+<button type="button" class="btn2" onClick="{{reset}}">처음부터 다시</button>
+</div>
+</sc-if>
+
+</div>
+
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 26px; font-weight: 700">0단계 학습 흐름</div>
+<div class="muted" style="font-size: 15px">왼쪽 폰 화면을 직접 눌러보세요. 오른쪽은 기획자 뷰예요(유저에게 보이지 않음).</div>
+</div>
+
+<div class="card">
+<div class="label">체크 건너뛰고 유저 유형별로 보기</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" class="preset" onClick="{{presetLearn}}">초급자 · 단어 조금 부족</button>
+<button type="button" class="preset" onClick="{{presetRead}}">중급자 · 바로 읽기 가능</button>
+<button type="button" class="preset" onClick="{{presetHard}}">입문자 · 단어 많이 부족</button>
+<button type="button" class="preset" onClick="{{reset}}">처음부터</button>
+</div>
+</div>
+
+<div class="card">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<div class="label">읽기 가능 구간</div>
+<div style="font-size: 14px; color: #4A4740">아는 토큰 {{knownTok}} / {{total}} · <b>{{covPct}}%</b></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div class="track" style="height: 14px"><div class="fill" style="width: {{covW}}"></div><div class="line"></div></div>
+<div style="display: flex; justify-content: space-between; font-size: 12px; color: #4A4740"><span>0%</span><span style="padding-right: 6%">85% 읽기 가능선 ({{need}}토큰)</span></div>
+</div>
+<sc-if value="{{noPlan}}" hint-placeholder-val="{{true}}">
+<div class="muted">단어 체크를 마치면 학습 계획이 계산돼요. 토큰 = 이야기 속 단어 등장 횟수(같은 단어가 3번 나오면 3토큰).</div>
+</sc-if>
+<sc-if value="{{hasPlan}}" hint-placeholder-val="{{false}}">
+<div style="font-size: 15px; line-height: 1.6">모르는 단어 <b>{{unkTotal}}개 전부</b>가 아니라, 85%선을 넘기는 데 필요한 <b>{{planLearn}}개</b>만 단어 세트로 만들어요. 나머지 {{planLater}}개는 본문을 읽으며 익혀요.</div>
+</sc-if>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px">
+<div class="card">
+<div class="label">훈련 목록 규칙</div>
+<div class="muted" style="font-size: 13px; color: #1D1C1A">체크 후 훈련 목록 페이지로. 모든 훈련이 끝나면 이 페이지로 돌아와요.</div>
+<div class="{{ruleReadCls}}"><b>85% 이상 → 본문 읽기 강조</b><span>훈련은 선택</span></div>
+<div class="{{ruleTrainCls}}"><b>85% 미만 → 훈련 강조</b><span>단어 세트는 순서 상관없이 선택</span></div>
+<div class="{{ruleChunkCls}}"><b>표현 만들기 2세트 (고정 6개, 3개씩)</b><span>단어 세트 1개 완료 시 열림. 단어 세트가 없으면 처음부터 열림</span></div>
+</div>
+<div class="card">
+<div class="label">학습 계획</div>
+<div class="muted" style="font-size: 13px">단어 세트: 모르는 단어를 등장 횟수 순으로 정렬 → 85%선까지 자름 → 5개씩</div>
+<sc-if value="{{noPlan}}" hint-placeholder-val="{{true}}"><div class="muted">체크 후 표시돼요.</div></sc-if>
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="0">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 13px"><b>{{g.title}}</b> <span style="color: #6B675F">· {{g.meta}}</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 5px"><sc-for list="{{g.chips}}" as="c" hint-placeholder-count="4"><span class="{{c.cls}}">{{c.w}}</span></sc-for></div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div class="card">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px">
+<div class="label">본문 원문 (유저에게 비공개)</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<span class="lg"><span class="tk-plan" style="padding: 0 6px">단어</span>세트 학습</span>
+<span class="lg"><span class="tk-learned" style="padding: 0 6px">단어</span>학습 완료</span>
+<span class="lg"><span class="tk-later">단어</span>읽으며 익힘</span>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px">
+<sc-for list="{{story}}" as="sen" hint-placeholder-count="12">
+<p class="sen"><sc-for list="{{sen.segs}}" as="g" hint-placeholder-count="5"><span class="{{g.cls}}">{{g.t}}</span></sc-for></p>
+</sc-for>
+</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1320,"height":1060}}'>
+var STORY_SRC = [
+  '민지는 [아침:아침]에 [일어나요:일어나다].',
+  '[창문:창문]을 [열어요:열다].',
+  '[날씨:날씨]가 [정말:정말] [좋아요:좋다].',
+  '민지는 [친구:친구]에게 [전화해요:전화하다].',
+  '“[같이:같이] [공원:공원]에 [갈까요:가다]?”',
+  '[친구:친구]가 [좋다:좋다]고 [말해요:말하다].',
+  '[두:두] [사람:사람]은 [공원:공원]에서 [만나요:만나다].',
+  '[공원:공원]에 [사람:사람]이 [많아요:많다].',
+  '민지와 [친구:친구]는 [커피:커피]를 [마셔요:마시다].',
+  '[그리고:그리고] [같이:같이] [걸어요:걷다].',
+  '[아침:아침] [공기:공기]가 [정말:정말] [시원해요:시원하다].',
+  '민지는 [오늘:오늘]이 [좋아요:좋다].'
+];
+var MEANING = {
+  '아침': 'morning', '일어나다': 'to get up', '창문': 'window', '열다': 'to open',
+  '날씨': 'weather', '정말': 'really', '좋다': 'good', '친구': 'friend',
+  '전화하다': 'to call', '같이': 'together', '공원': 'park', '가다': 'to go',
+  '말하다': 'to say', '두': 'two', '사람': 'person', '만나다': 'to meet',
+  '많다': 'many, a lot', '커피': 'coffee', '마시다': 'to drink', '그리고': 'and',
+  '걷다': 'to walk', '공기': 'air', '시원하다': 'cool, fresh', '오늘': 'today'
+};
+var CHUNKS = [
+  { id: 'c1', words: ['친구', '전화하다'], tiles: ['친구에게', '전화해요'], pool: ['전화해요', '커피를', '친구에게'], en: 'call a friend' },
+  { id: 'c2', words: ['같이', '공원', '가다'], tiles: ['같이', '공원에', '갈까요?'], pool: ['공원에', '갈까요?', '오늘', '같이'], en: 'Shall we go to the park together?' },
+  { id: 'c3', words: ['사람', '많다'], tiles: ['사람이', '많아요'], pool: ['많아요', '친구가', '사람이'], en: 'there are a lot of people' },
+  { id: 'c4', words: ['커피', '마시다'], tiles: ['커피를', '마셔요'], pool: ['마셔요', '공원에', '커피를'], en: 'drink coffee' },
+  { id: 'c5', words: ['정말', '좋다'], tiles: ['정말', '좋아요'], pool: ['좋아요', '같이', '정말'], en: 'really good' },
+  { id: 'c6', words: ['아침', '공기'], tiles: ['아침', '공기가'], pool: ['공기가', '아침', '친구에게'], en: 'the morning air' }
+];
+var CHUNK_BY_ID = {};
+CHUNKS.forEach(function (c) { CHUNK_BY_ID[c.id] = c; });
+var CHUNK_SETS = [['c1', 'c2', 'c3'], ['c4', 'c5', 'c6']];
+
+var SENTENCES = STORY_SRC.map(function (src) {
+  var segs = [], re = /\[([^:\]]+):([^\]]+)\]/g, last = 0, m;
+  while ((m = re.exec(src))) {
+    if (m.index > last) segs.push({ t: src.slice(last, m.index), w: '' });
+    segs.push({ t: m[1], w: m[2] });
+    last = re.lastIndex;
+  }
+  if (last < src.length) segs.push({ t: src.slice(last), w: '' });
+  return segs;
+});
+var WORDS = [], IDX = {};
+SENTENCES.forEach(function (segs) {
+  segs.forEach(function (g) {
+    if (!g.w) return;
+    if (IDX[g.w] == null) { IDX[g.w] = WORDS.length; WORDS.push({ w: g.w, m: MEANING[g.w], c: 0, first: WORDS.length }); }
+    WORDS[IDX[g.w]].c += 1;
+  });
+});
+var TOTAL = WORDS.reduce(function (a, x) { return a + x.c; }, 0);
+var READ_LINE = 0.85;
+var NEED = Math.ceil(READ_LINE * TOTAL);
+var SET_SIZE = 5;
+
+function tokensOf(known) {
+  var t = 0;
+  WORDS.forEach(function (x) { if (known[x.w]) t += x.c; });
+  return t;
+}
+function buildPlan(known) {
+  var tok = tokensOf(known);
+  var unk = WORDS.filter(function (x) { return !known[x.w]; })
+    .sort(function (a, b) { return (b.c - a.c) || (a.first - b.first); });
+  var learn = [], later = [];
+  unk.forEach(function (x) {
+    if (tok < NEED) { learn.push(x.w); tok += x.c; } else { later.push(x.w); }
+  });
+  var sets = [];
+  for (var i = 0; i < learn.length; i += SET_SIZE) sets.push(learn.slice(i, i + SET_SIZE));
+  if (sets.length > 1 && sets[sets.length - 1].length <= 2) {
+    var tail = sets.pop();
+    sets[sets.length - 1] = sets[sets.length - 1].concat(tail);
+  }
+  var inPlan = {};
+  learn.forEach(function (w) { inPlan[w] = true; });
+  return { sets: sets, later: later, learnCount: learn.length, inPlan: inPlan };
+}
+function firstOpenSet(plan, learned) {
+  if (!plan) return -1;
+  for (var i = 0; i < plan.sets.length; i++) {
+    if (plan.sets[i].some(function (w) { return !learned[w]; })) return i;
+  }
+  return -1;
+}
+function initState() {
+  return {
+    phase: 'intro', known: {}, learned: {}, checkIdx: 0, plan: null,
+    setIdx: 0, stage: 'card', item: 0, revealed: false, picked: -1,
+    chunkQ: [], chunkI: 0, chunkPicked: [], chunkChecked: false, chunkHint: false, doneChunks: {},
+    setStartCov: 0, chunkSetIdx: 0, justUnlocked: false
+  };
+}
+function pct(x) { return Math.round(x * 100); }
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = initState();
+  }
+
+  applyPreset(list) {
+    var known = {};
+    list.forEach(function (w) { known[w] = true; });
+    this.setState(Object.assign(initState(), { phase: 'result', known: known, plan: buildPlan(known), checkIdx: WORDS.length }));
+  }
+
+  answer(k) {
+    var s = this.state;
+    var w = WORDS[s.checkIdx].w;
+    var known = Object.assign({}, s.known);
+    if (k) known[w] = true; else delete known[w];
+    var next = s.checkIdx + 1;
+    if (next >= WORDS.length) this.setState({ known: known, checkIdx: next, plan: buildPlan(known), phase: 'result' });
+    else this.setState({ known: known, checkIdx: next });
+  }
+
+  startWordSet(i) {
+    var s = this.state;
+    this.setState({
+      phase: 'learn', setIdx: i, stage: 'card', item: 0, revealed: false, picked: -1,
+      setStartCov: tokensOf(s.known) / TOTAL, justUnlocked: false
+    });
+  }
+
+  startChunkSet(k) {
+    this.setState({
+      phase: 'chunk', chunkSetIdx: k, chunkQ: CHUNK_SETS[k].slice(),
+      chunkI: 0, chunkPicked: [], chunkChecked: false, chunkHint: false
+    });
+  }
+
+  quizNext() {
+    var s = this.state;
+    var set = s.plan.sets[s.setIdx];
+    var w = set[s.item];
+    var known = Object.assign({}, s.known); known[w] = true;
+    var learned = Object.assign({}, s.learned); learned[w] = true;
+    if (s.item < set.length - 1) this.setState({ known: known, learned: learned, item: s.item + 1, picked: -1 });
+    else {
+      var before = s.plan.sets.filter(function (st) { return st.every(function (x) { return s.learned[x]; }); }).length;
+      this.setState({ known: known, learned: learned, phase: 'wordDone', justUnlocked: before === 0 });
+    }
+  }
+
+  chunkNext() {
+    var s = this.state;
+    var dc = Object.assign({}, s.doneChunks);
+    dc[s.chunkQ[s.chunkI]] = true;
+    if (s.chunkI < s.chunkQ.length - 1) this.setState({ doneChunks: dc, chunkI: s.chunkI + 1, chunkPicked: [], chunkChecked: false, chunkHint: false });
+    else this.setState({ doneChunks: dc, phase: 'chunkDone' });
+  }
+
+  renderVals() {
+    var self = this, s = this.state;
+    var known = s.known, learned = s.learned, plan = s.plan;
+    var tok = tokensOf(known), cov = tok / TOTAL, covPct = pct(cov);
+    var reached = tok >= NEED;
+    var sets = plan ? plan.sets : [];
+    var curSet = sets[s.setIdx] || [];
+    var curWord = curSet[s.item] || '';
+    var wi = IDX[curWord] != null ? IDX[curWord] : 0;
+    var n = WORDS.length;
+
+    var pos = s.item % 3;
+    var optTexts = [WORDS[(wi + 5) % n].m, WORDS[(wi + 11) % n].m];
+    optTexts.splice(pos, 0, MEANING[curWord] || '');
+    var opts = optTexts.map(function (t, i) {
+      var cls = '';
+      if (s.picked >= 0) cls = i === pos ? 'right' : (i === s.picked ? 'wrong' : 'dim');
+      return { t: t, cls: cls, pick: function () { if (self.state.picked < 0) self.setState({ picked: i }); } };
+    });
+
+    var ch = CHUNK_BY_ID[s.chunkQ[s.chunkI]] || CHUNKS[0];
+    var pickedIdx = s.chunkPicked;
+    var pool = ch.pool.map(function (t, i) {
+      return {
+        t: t, cls: pickedIdx.indexOf(i) >= 0 ? 'used' : '',
+        pick: function () {
+          var st = self.state;
+          if (st.chunkChecked || st.chunkPicked.indexOf(i) >= 0) return;
+          self.setState({ chunkPicked: st.chunkPicked.concat([i]) });
+        }
+      };
+    });
+    var slots = pickedIdx.map(function (i) { return { t: ch.pool[i] }; });
+    var built = pickedIdx.map(function (i) { return ch.pool[i]; }).join(' ');
+    var chunkRight = s.chunkChecked && built === ch.tiles.join(' ');
+    var hintText = ch.words.map(function (w) { return w + ' = ' + MEANING[w]; }).join(' · ');
+
+    var remainSet = 0;
+    sets.forEach(function (set) { set.forEach(function (w) { if (!learned[w]) remainSet += 1; }); });
+    var openIdx = firstOpenSet(plan, learned);
+    var remainUnknown = WORDS.filter(function (x) { return !known[x.w]; }).length;
+    var doneChunkCount = CHUNKS.filter(function (c) { return s.doneChunks[c.id]; }).length;
+    var completedWordSets = 0;
+    var resultSets = sets.map(function (set, i) {
+      var done = set.every(function (w) { return learned[w]; });
+      if (done) completedWordSets += 1;
+      return {
+        label: '단어 세트 ' + (i + 1) + ' · ' + set.length + '단어', words: set.join(' · '),
+        cls: done ? 'done' : '', badge: done ? '완료 · 다시' : '시작', bcls: done ? 'done' : '',
+        go: function () { self.startWordSet(i); }
+      };
+    });
+    var chunkLocked = sets.length > 0 && completedWordSets === 0;
+    var chunkSets = CHUNK_SETS.map(function (ids, k) {
+      var done = ids.every(function (id) { return s.doneChunks[id]; });
+      return {
+        label: '표현 만들기 ' + (k + 1) + ' · ' + ids.length + '개',
+        words: ids.map(function (id) { return CHUNK_BY_ID[id].en; }).join(' · '),
+        cls: chunkLocked ? 'locked' : (done ? 'done' : ''),
+        badge: chunkLocked ? '잠김' : (done ? '완료 · 다시' : '시작'),
+        bcls: chunkLocked ? 'locked' : (done ? 'done' : ''),
+        locked: chunkLocked,
+        go: function () { if (!chunkLocked) self.startChunkSet(k); }
+      };
+    });
+
+    var inLearnFlow = s.phase === 'learn' || s.phase === 'wordDone';
+    var groups = [];
+    if (plan) {
+      sets.forEach(function (set, i) {
+        var t = 0;
+        set.forEach(function (w) { t += WORDS[IDX[w]].c; });
+        groups.push({
+          title: '단어 세트 ' + (i + 1), meta: set.length + '단어 · +' + t + '토큰',
+          chips: set.map(function (w) {
+            return { w: w, cls: learned[w] ? 'chip done' : (inLearnFlow && i === s.setIdx ? 'chip cur' : 'chip') };
+          })
+        });
+      });
+      if (plan.later.length) {
+        groups.push({ title: '읽으며 익히기', meta: plan.later.length + '단어 · 본문 단어 탭으로', chips: plan.later.map(function (w) { return { w: w, cls: 'chip later' }; }) });
+      }
+      var pre = WORDS.filter(function (x) { return known[x.w] && !learned[x.w]; }).map(function (x) { return x.w; });
+      groups.push({ title: '이미 앎', meta: pre.length + '단어', chips: pre.map(function (w) { return { w: w, cls: 'chip known' }; }) });
+      groups.push({
+        title: '표현 만들기', meta: '고정 ' + CHUNKS.length + '개 · 3개씩 2세트' + (chunkLocked ? ' · 잠김' : ''),
+        chips: CHUNKS.map(function (c) { return { w: c.tiles.join(' '), cls: s.doneChunks[c.id] ? 'chip done' : 'chip chunk' }; })
+      });
+    }
+
+    function segCls(w) {
+      if (!w) return 'tk-other';
+      if (!plan) return known[w] ? 'tk-known' : 'tk-pending';
+      if (learned[w]) return 'tk-learned';
+      if (known[w]) return 'tk-known';
+      if (plan.inPlan[w]) return 'tk-plan';
+      return 'tk-later';
+    }
+    var story = SENTENCES.map(function (segs) {
+      return { segs: segs.map(function (g) { return { t: g.t, cls: segCls(g.w) }; }) };
+    });
+
+    var checkWordObj = WORDS[s.checkIdx] || WORDS[n - 1];
+
+    return {
+      wordCount: n, total: TOTAL, need: NEED, knownTok: tok, covPct: covPct, covW: covPct + '%',
+      reached: reached, notReached: !reached,
+      isIntro: s.phase === 'intro', isCheck: s.phase === 'check', isResult: s.phase === 'result',
+      isLearning: s.phase === 'learn', isWordDone: s.phase === 'wordDone',
+      isChunk: s.phase === 'chunk', isChunkDone: s.phase === 'chunkDone', isRead: s.phase === 'read',
+      isCard: s.stage === 'card', isQuiz: s.stage === 'quiz',
+
+      readCls: reached ? 'btn' : 'btn2', listCls: reached ? 'btn2' : 'btn',
+      chunkSets: chunkSets, chunkLocked: !!plan && chunkLocked, noWordSets: !!plan && sets.length === 0,
+      justUnlocked: s.justUnlocked, chunkSetNo: s.chunkSetIdx + 1,
+
+      chips: WORDS.map(function (x) {
+        var on = !!known[x.w];
+        return {
+          w: x.w, m: on ? x.m : '', on: on, cls: on ? 'on' : '',
+          toggle: function () {
+            var k = Object.assign({}, self.state.known);
+            if (k[x.w]) delete k[x.w]; else k[x.w] = true;
+            self.setState({ known: k });
+          }
+        };
+      }),
+      knownCount: WORDS.filter(function (x) { return known[x.w]; }).length,
+      finishCheck: function () {
+        var k = self.state.known;
+        self.setState({ plan: buildPlan(k), phase: 'result', checkIdx: WORDS.length });
+      },
+
+      needCount: remainSet, setCount: sets.length, resultSets: resultSets, remainUnknown: remainUnknown,
+
+      setNo: s.setIdx + 1, setTotal: sets.length, setLen: curSet.length,
+      itemNo: s.item + 1, itemTotal: curSet.length,
+      curWord: curWord, curMeaning: MEANING[curWord] || '', curCount: curWord ? WORDS[wi].c : 0,
+      revealed: s.revealed, notRevealed: !s.revealed,
+      opts: opts, answered: s.picked >= 0,
+      beforePct: pct(s.setStartCov),
+
+      chunkNo: s.chunkI + 1, chunkTotal: s.chunkQ.length, chunkEn: ch.en, chunkAnswer: ch.tiles.join(' '),
+      pool: pool, slots: slots, noSlots: slots.length === 0,
+      hintText: hintText, hintShown: s.chunkHint, hintHidden: !s.chunkHint,
+      chunkChecked: s.chunkChecked, chunkEditing: !s.chunkChecked,
+      chunkRight: chunkRight, chunkWrong: s.chunkChecked && !chunkRight,
+      cantCheck: pickedIdx.length !== ch.tiles.length,
+      chunkDoneCount: doneChunkCount, chunkAll: CHUNKS.length,
+
+      noPlan: !plan, hasPlan: !!plan,
+      unkTotal: plan ? plan.learnCount + plan.later.length : 0,
+      planLearn: plan ? plan.learnCount : 0, planLater: plan ? plan.later.length : 0,
+      ruleReadCls: plan && reached ? 'rule on' : 'rule',
+      ruleTrainCls: plan && !reached ? 'rule on' : 'rule',
+      ruleChunkCls: plan && !chunkLocked ? 'rule on' : 'rule',
+      groups: groups, story: story,
+
+      start: function () { self.setState(Object.assign(initState(), { phase: 'check' })); },
+      reset: function () { self.setState(initState()); },
+      reveal: function () { self.setState({ revealed: true }); },
+      cardNext: function () {
+        var st = self.state;
+        if (st.item < curSet.length - 1) self.setState({ item: st.item + 1, revealed: false });
+        else self.setState({ stage: 'quiz', item: 0, picked: -1 });
+      },
+      quizNext: function () { self.quizNext(); },
+      showHint: function () { self.setState({ chunkHint: true }); },
+      chunkClear: function () { if (!self.state.chunkChecked) self.setState({ chunkPicked: [] }); },
+      chunkCheck: function () { if (self.state.chunkPicked.length === ch.tiles.length) self.setState({ chunkChecked: true }); },
+      chunkNext: function () { self.chunkNext(); },
+      goRead: function () { self.setState({ phase: 'read' }); },
+      presetLearn: function () { self.applyPreset(['커피', '친구', '좋다', '사람', '가다', '오늘', '정말', '그리고']); },
+      presetRead: function () {
+        var skip = { '공기': 1, '시원하다': 1, '창문': 1 };
+        self.applyPreset(WORDS.filter(function (x) { return !skip[x.w]; }).map(function (x) { return x.w; }));
+      },
+      presetHard: function () { self.applyPreset(['커피', '친구', '좋다']); }
+    };
+  }
+}
+</script>
+</body>
+</html>
